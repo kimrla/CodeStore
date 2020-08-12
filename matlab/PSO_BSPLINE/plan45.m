@@ -21,8 +21,8 @@ M=length(x)-1; %论文中是0~M，所以总数length=M+1
 
 t=canshuhua(M,d);
 p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2  n=M+1+p-1,
-n=M+p-1;
-% n=64;
+
+n=30;
 
 P=60;%粒子规模P 内节点数量
 T=10;%最大迭代次数
@@ -43,8 +43,9 @@ ui=[zeros(P,p+1) X ones(P,p+1)];%PSO自适应节点向量
 
 
 % 最小二乘法求控制顶点
- [N,R,Pi] = kongzhidingdian(M,n,p,t,ui,d);
-
+for k=1:P
+    [N,R,Pi] = kongzhidingdian(M,n,p,t,ui(k,:),d);
+end
 
 % DrawSpline(n,p,Pi,ui);
 % axis([x(1)-1,x(end)+1,min(y)-1,max(y)+1])
@@ -59,12 +60,14 @@ for i=1:P
 end
 g= ones(1,n-p);
 gbest = inf;
-for i=1:P
-    if(pbest(i)<gbest)
-        g = position(i,:);
-        gbest=pbest(i);
-    end
-end
+% for i=1:P
+%     if(pbest(i)<gbest)
+%         g = position(i,:);
+%         gbest=pbest(i);
+%     end
+% end
+[gbest,i]=min(pbest);
+g = position(i,:);
 gb=ones(1,T);
 for i=1:T
             if i>1

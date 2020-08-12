@@ -19,13 +19,22 @@ l=[-dy;dx]';%在数据点处的法向量约束条件li i=1~M+1
 M=length(x)-1; %论文中是0~M，所以总数length=M+1
 
 t=canshuhua(M,d);
-p=3;%B样条次数p=3，控制顶点n个，节点矢量ui i=1~n+p+2==M+1+p-1,
-n=M+p;
+p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
+
+n=30;
 
 
-% ui=jiedianxiangliang(n,p);%方案1 均匀节点向量
-% ui=jiedianxiangliang2(n,p,t);%方案2 平均节点向量
-ui=jiedianxiangliang3(n,p,t,M);%方案3 皮格尔逼近节点向量
+ui=jiedianxiangliang(n,p);%方案1 均匀节点向量
+% ui=jiedianxiangliang2(n,p,t,M);%方案2 平均节点向量
+% ui=jiedianxiangliang3(n,p,t,M);%方案3 皮格尔逼近节点向量
+
+% u=0:0.01:1;
+% for j=1:n+1
+%     for i=1:length(u)
+%         Njp_u(i,j) = Njp(j, p , u(i), ui);  
+%     end
+%     subplot(5,5,j),plot(u,Njp_u(:,j));
+% end
 
 
 [N,R,P] = kongzhidingdian(M,n,p,t,ui,d);

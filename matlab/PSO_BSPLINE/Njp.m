@@ -2,7 +2,7 @@ function Njp_u = Njp(j, p , u, ui)
 % 计算基函数Nj,p(u),ui为节点向量
  
 if p == 0       % 0次B样条
-    if (u >= ui(j+1)) && (u < ui(j+2))
+    if (u >= ui(j)) && (u < ui(j+1))
         Njp_u = 1.0;
     else
         Njp_u = 0.0;

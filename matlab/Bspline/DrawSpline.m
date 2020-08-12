@@ -8,11 +8,13 @@ plot(P(1, 1:n+1), P(2, 1:n+1),...
                     'MarkerSize',6);
 line(P(1, 1:n+1), P(2, 1:n+1));
 Nik = zeros(n+1, 1);
+j=0;
 for u = 0 : 0.005 : 1-0.005
+    j=j+1;
     for i = 0 : 1 : n
-        Nik(i+1, 1) = BaseFunction(i, k , u, NodeVector);
+        Nik(i+1, j) = BaseFunction(i, k , u, NodeVector);
     end
-    p_u = P * Nik;
+    p_u = P * Nik(:,j);
     if u == 0
         tempx = p_u(1,1);
         tempy = p_u(2,1);
