@@ -44,15 +44,15 @@ ui=[zeros(P,p+1) X ones(P,p+1)];%PSO自适应节点向量
 
 % 最小二乘法求控制顶点
 for k=1:P
-    [N,R,Pi] = kongzhidingdian(M,n,p,t,ui(k,:),d);
-end
+    [N(:,:,k),R(:,:,k),Pi(:,:,k)] = kongzhidingdian(M,n,p,t,ui(k,:),d);
+
 
 % DrawSpline(n,p,Pi,ui);
 % axis([x(1)-1,x(end)+1,min(y)-1,max(y)+1])
 
-[epsilon,e] = shujudianwucha(M,N,Pi,d);
-[sst,es,ev] = faxiangliangwucha(M,n,p,ui,t,l,Pi);
-
+[epsilon(:,:,k),e(k)] = shujudianwucha(M,N(:,:,k),Pi(:,:,k),d);
+[sst(:,:,k),es(k,:),ev(k)] = faxiangliangwucha(M,n,p,ui(k,:),t,l,Pi(:,:,k));
+end
 position=X;
 pbest=ones(P,1);
 for i=1:P
