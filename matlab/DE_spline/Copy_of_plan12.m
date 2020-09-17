@@ -34,6 +34,8 @@ p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
 ui=zeros(NP,n+p+2);
 for i=1:NP
     ui(i,:)=sort(jiedianxiangliang(n,p)+[zeros(1,4) normrnd(0,0.01,1,n-3) zeros(1,4)]);%方案1 均匀节点向量
+    ui(ui>1)=1;
+    ui(ui<0)=0;
 end
 
 
