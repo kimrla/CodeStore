@@ -1,0 +1,83 @@
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+\begin{equation}
+    \begin{aligned}
+        P_i=(x_i,y_i),(i=1,2,\dots,n)\\
+        \\
+        f(x_i)=ax_i + b\\     
+        L(a,b)=\sum_{i=1}^n(y_i-f(x_i))^2  \\ 
+        f(x)=\begin{pmatrix}
+            x_i&1
+        \end{pmatrix}\begin{pmatrix}
+            a\\b
+        \end{pmatrix}
+        \begin{cases}
+            f(x_1)=a x_1 +b   \\
+            f(x_2)=a x_2 +b   \\
+            f(x_3)=a x_3 +b   \\
+            
+        \end{cases} \\
+        \\
+        \\
+        \mathbf{Y}=\begin{pmatrix}
+            y_1\\y_2\\y_3
+        \end{pmatrix}
+        \mathbf{\hat{Y}}=\begin{pmatrix} f(x_1)\\f(x_2)\\f(x_3) \end{pmatrix}
+        \mathbf{X}=\begin{pmatrix}
+            x_1&1\\
+            x_2&1\\
+            x_3&1
+        \end{pmatrix}
+        \mathbf{A}=\begin{pmatrix}
+            a\\b
+        \end{pmatrix}\\  
+        \\
+        min |\mathbf{Y}-\mathbf{\hat{Y}}|^2      \\
+        \\
+        \mathbf{A}=(\mathbf{X}^\mathrm{T}\mathbf{X})^{-1}\mathbf{X}^\mathrm{T}\mathbf{Y}\\
+        \\
+        \mathbf{X}=\begin{pmatrix}
+            x_1&1\\
+            x_2&1\\
+            x_3&1
+        \end{pmatrix}=\begin{pmatrix}
+            \mathbf{X}_1&\mathbf{X}_2
+        \end{pmatrix}\\
+        \\
+        \mathbf{\hat{Y}}=\mathbf{X}\mathbf{A}\\
+        \\
+        \mathbf{\hat{Y}}=\mathbf{X}\mathbf{A}=\begin{pmatrix}
+            \mathbf{X}_1&\mathbf{X}_2
+        \end{pmatrix}\begin{pmatrix}
+            a\\b
+        \end{pmatrix}\\=a\mathbf{X}_1+b\mathbf{X}_2\\
+        min |\mathbf{Y}-\mathbf{\hat{Y}}|^2 \to (\mathbf{Y}-\mathbf{\hat{Y}})\perp\mathbf{X_1},\mathbf{X_2}\\
+        \\
+        \mathbf{X_1}=\begin{pmatrix}
+            x_1\\
+            x_2\\
+            x_3
+        \end{pmatrix}
+        \mathbf{X_2}=\begin{pmatrix}
+            1\\
+            1\\
+            1
+        \end{pmatrix}\\
+        \mathbf{X_1}^\mathrm{T}(\mathbf{Y}-\mathbf{\hat{Y}})=\begin{pmatrix}
+            x_1&x_2&x_3
+        \end{pmatrix}(\mathbf{Y}-\mathbf{\hat{Y}})=0\\
+        \mathbf{X_2}^\mathrm{T}(\mathbf{Y}-\mathbf{\hat{Y}})=\begin{pmatrix}
+            1&1&1
+        \end{pmatrix}(\mathbf{Y}-\mathbf{\hat{Y}})=0\\
+        \mathbf{X}^\mathrm{T}(\mathbf{Y}-\mathbf{\hat{Y}})=0\\
+        \to \begin{pmatrix}
+            x_1&x_2&x_3\\
+            1&1&1
+        \end{pmatrix}(\mathbf{Y}-\mathbf{\hat{Y}})=0\\
+        \to \mathbf{X}^\mathrm{T}(\mathbf{Y}-\mathbf{XA})=0\\
+        \to \mathbf{X}^\mathrm{T}\mathbf{Y}-\mathbf{X}^\mathrm{T}\mathbf{XA}=0\\
+        \to \mathbf{X}^\mathrm{T}\mathbf{Y}=\mathbf{X}^\mathrm{T}\mathbf{XA}
+    \end{aligned}   
+\end{equation}
+\end{document}
