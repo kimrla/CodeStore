@@ -43,7 +43,7 @@ ui=jiedianxiangliang(n,p);%方案1 均匀节点向量
 % end
 
 
-[N,R,P] = kongzhidingdian(M,n,p,t,ui,d);
+[N,R,P] = kongzhidingdian(M,n,p,x,ui,d);
 
 DrawSpline(n,p,P,ui);
 
