@@ -4,18 +4,27 @@ NP=50;%种群规模NP
 
 GM=200;%最大迭代次数
 
-% 实验1
-x=0:0.01:1-0.01;
-f=90./(1+exp(-100*(x-0.4)));
-n=8;%内节点个数n-p
-lamda=0.025;%节点率λ
-dp=0.6;%删除概率
-Num=length(x);%采样点个数
+p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
 
-% % 实验2
-% x=0:0.05:10;
-% y=100./exp(abs(x-5))+(x-5).^2/500;
-% n=13;
+% % 实验1
+% x=0:0.005:1-0.005;
+% f=90./(1+exp(-100*(x-0.4)));
+% n=8;%内节点个数n-p
+% lamda=0.025;%节点率λ
+% dp=0.6;%删除概率
+% Num=length(x);%采样点个数
+% a=min(x);
+% b=max(x);
+
+% 实验2
+x=0:0.05:10-0.05;
+f=100./exp(abs(x-5))+(x-5).^2/500;
+n=13;
+lamda=0.05;
+dp=0.6;
+Num=length(x);
+a=min(x);
+b=max(x);
 
 f_=f+normrnd(0,0.01,1,Num);%加随机扰动
 
@@ -34,12 +43,12 @@ p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
 
 
 for i=1:NP
-    X{i}=sort(neijiedian(n,p)+normrnd(0,0.01,1,n-3));%初始种群并初始化
+    X{i}=sort(neijiedian(n,p,a,b)+normrnd(0,0.01,1,n-3));%初始种群并初始化
     
-    ui{i}=[zeros(1,p+1) X{i} ones(1,p+1)];%方案1 均匀节点向量     
+    ui{i}=[zeros(1,p+1) X{i} b*ones(1,p+1)];%方案1 均匀节点向量     
     [N{i},~,P{i}] = kongzhidingdian(M,n,p,x,ui{i},d);
     [~,R(i)]=shujudianwucha(M,N{i},P{i},d);
-    BIC(i)=Num*log(R(i))+log(Num)*(p+n+1);     
+    BIC(i)=Num*log(1+R(i))+log(Num)*(2*n-p+1);     
 end
 ui_=cell (1,50);
 for gen=1:GM
@@ -66,7 +75,7 @@ for gen=1:GM
             if rand1<dp
                 X_{i}(randi(length(X_{i}),1,1))=[];
             else                
-                X_{i}(end+1)=rand;
+                X_{i}(end+1)=a+(b-a)*rand;
                 X_{i}=sort(X_{i});
             end
             nr(i)=length(X_{i});
@@ -91,18 +100,20 @@ for gen=1:GM
        for j=1:D
            if j<=length(X{m}) & rand2>CR 
                V{m}(j)=X{m}(j);
-           elseif  j<=D & U{m}(j)>0 & U{m}(j)<1
+           elseif  j<=D & U{m}(j)>a & U{m}(j)<b
                V{m}(j)=U{m}(j);
            else
-               V{m}(j)=rand3;
+               V{m}(j)=a+(b-a)*rand3;
            end
        end
+       V{m}=sort(V{m});
        
-       ui_{m}=[zeros(1,p+1) V{m} ones(1,p+1)];%方案1 均匀节点向量       
+       
+       ui_{m}=[zeros(1,p+1) V{m} b*ones(1,p+1)];%方案1 均匀节点向量       
        n_=length(ui_{m})-p-2;
        [N_{m},~,P_{m}] = kongzhidingdian(M,n_,p,x,ui_{m},d);
        [~,R_(m)]=shujudianwucha(M,N_{m},P_{m},d);
-       BIC_(m)=Num*log(R_(m))+log(Num)*(p+n_+1);     
+       BIC_(m)=Num*log(1+R_(m))+log(Num)*(2*n_-p+1);     
        
        if BIC_(m)<BIC(m)
            X{m}=V{m};
@@ -121,7 +132,7 @@ end
 figure
 plot(x,f_,"*")
 hold on
-DrawSpline(neijiedianshuliang(end)+p,p,bestP{end},bestui{end});
+DrawSpline(neijiedianshuliang(end)+p,p,bestP{end},bestui{end},a,b);
 scatter(bestui{end},ones(1,length(bestui{end})))
 figure
 plot(BICbest)
