@@ -6,25 +6,25 @@ GM=200;%最大迭代次数
 
 p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
 
-% 实验1
-x=0:0.005:1-0.005;
-f=90./(1+exp(-100*(x-0.4)));
-n=8;%内节点个数n-p
-lamda=0.025;%节点率λ
-dp=0.6;%删除概率
-Num=length(x);%采样点个数
-a=min(x);
-b=max(x);
-
-% % 实验2
-% x=0:0.05:10-0.05;
-% f=100./exp(abs(x-5))+(x-5).^2/500;
-% n=13;
-% lamda=0.05;
-% dp=0.6;
-% Num=length(x);
+% % 实验1
+% x=0:0.005:1-0.005;
+% f=90./(1+exp(-100*(x-0.4)));
+% n=8;%内节点个数n-p
+% lamda=0.025;%节点率λ
+% dp=0.6;%删除概率
+% Num=length(x);%采样点个数
 % a=min(x);
 % b=max(x);
+
+% 实验2
+x=0:0.05:10-0.05;
+f=100./exp(abs(x-5))+(x-5).^2/500;
+n=13;
+lamda=0.05;
+dp=0.6;
+Num=length(x);
+a=min(x);
+b=max(x);
 
 f_=f+normrnd(0,0.01,1,Num);%加随机扰动
 
@@ -74,9 +74,9 @@ for gen=1:GM
             X_{i}=X{r(i)};
             if rand1<dp
                 X_{i}(randi(length(X_{i}),1,1))=[];
-            else                
-                X_{i}(end+1)=a+(b-a)*rand;
-                X_{i}=sort(X_{i});
+%             else                
+%                 X_{i}(end+1)=a+(b-a)*rand;
+%                 X_{i}=sort(X_{i});
             end
             nr(i)=length(X_{i});
         end
@@ -93,11 +93,12 @@ for gen=1:GM
        U{m}=X_{1}+(X_{2}-X_{3})*FG;
        
        %杂交操作
-       rand4=rand;
-       rand2=rand;
-       rand3=rand;
-       CR=0.5*(rand4+1);
+       
        for j=1:D
+           rand4=rand;
+           rand2=rand;
+           rand3=rand;
+           CR=0.5*(rand4+1);
            if j<=length(X{m}) & rand2>CR 
                V{m}(j)=X{m}(j);
            elseif  j<=D & U{m}(j)>a & U{m}(j)<b
