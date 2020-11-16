@@ -48,7 +48,7 @@ for i=1:NP
     ui{i}=[zeros(1,p+1) X{i} b*ones(1,p+1)];%方案1 均匀节点向量     
     [N{i},~,P{i}] = kongzhidingdian(M,n,p,x,ui{i},d);
     [~,R(i)]=shujudianwucha(M,N{i},P{i},d);
-    BIC(i)=Num*log(1+R(i))+log(Num)*(2*n-p+1);     
+    BIC(i)=Num*log(1+R(i))+25*log(Num)*(2*n-p+1);     
 end
 ui_=cell (1,50);
 for gen=1:GM
@@ -114,7 +114,7 @@ for gen=1:GM
        n_=length(ui_{m})-p-2;
        [N_{m},~,P_{m}] = kongzhidingdian(M,n_,p,x,ui_{m},d);
        [~,R_(m)]=shujudianwucha(M,N_{m},P_{m},d);
-       BIC_(m)=Num*log(1+R_(m))+log(Num)*(2*n_-p+1);     
+       BIC_(m)=Num*log(1+R_(m))+25*log(Num)*(2*n_-p+1);     
        
        if BIC_(m)<BIC(m)
            X{m}=V{m};

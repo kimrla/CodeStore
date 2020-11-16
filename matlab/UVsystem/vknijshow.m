@@ -1,9 +1,9 @@
 clear all
 x=0:0.001:1;
-nmax=4;
+nmax=2;
 num=0;
 k=1;
-for n=1:nmax    
+for n=2:nmax    
 % n=3;
     for i=1:k+1 
         if n<3
