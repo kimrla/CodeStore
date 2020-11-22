@@ -23,20 +23,17 @@ end
 % for i=1:4
 %     T{i}=zeros(8,8);
 % end
-for j=1:4
-    T{j}=P{j};
-for i=1:8/2^(j-1)-1
-    T{j}=blkdiag(T{j},P{j});
-end
+for i=1:8
+    T{1}(i,i)=P{1};    
 end
 % T{2}=blkdiag(P{2},P{2},P{2},P{2});
-% T{2}=P{2};
-% for i=1:8/2-1
-%     T{2}=blkdiag(T{2},P{2});
-% end
-% 
-% T{3}=blkdiag(P{3},P{3});
-% T{4}=P{4};
+T{2}=P2;
+for i=1:8/2
+    T{2}=blkdiag(T{2},P{2});
+end
+
+T{3}=blkdiag(P{3},P{3});
+T{4}=P{4};
 for k=1:4
     figure
 for i=1:8
