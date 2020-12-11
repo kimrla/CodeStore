@@ -1,9 +1,9 @@
 clear all;
-example=1;
+example=3;
 switch example
     case 1
         % 实验1
-        x=0:0.01:1-0.01;
+        x=0:0.005:1-0.005;
         f=90./(1+exp(-100*(x-0.4)));
         n=8;%控制顶点个数-1
         Num=length(x);%采样点个数
@@ -19,6 +19,15 @@ switch example
         a=min(x);
         b=max(x);
         lamda=0.05;%
+    case 3
+        %
+        x=0:0.005:1-0.005;
+        f=1./(0.01+(x-0.3).^2).*(x<0.6)+1./(0.015+(x-0.65).^2).*(x>=0.6);
+        n=13;
+        Num=length(x);
+        a=min(x);
+        b=max(x);
+        lamda=0.05;
 end
 
 f_=f+normrnd(0,0.01,1,Num);
@@ -38,13 +47,13 @@ switch plan
         ui=jiedianxiangliang(n,p,a,b);%方案1 均匀节点向量
 
 
-        % u=0:0.01:1;
-        % for j=1:n+1
-        %     for i=1:length(u)
-        %         Njp_u(i,j) = Njp(j, p , u(i), ui);  
-        %     end
-        %     subplot(5,5,j),plot(u,Njp_u(:,j));
-        % end
+%         u=0:0.005:1-0.005;
+%         for j=1:n+1
+%             for i=1:length(u)
+%                 Njp_u(i,j) = Njp(j, p , u(i), ui);  
+%             end
+%             subplot(5,5,j),plot(u,Njp_u(:,j));
+%         end
 
 
         [N,R,P] = kongzhidingdian(M,n,p,x,ui,d);
@@ -95,8 +104,8 @@ switch plan
                     newX{m*2-1}=sort([crosstemp1 temp2]);
                     newX{m*2}=sort([crosstemp2 temp1]);
                 else 
-                    newX{m*2-1}=[];
-                    newX{m*2}=[];
+                    newX{m*2-1}=X{m*2-1};
+                    newX{m*2}=X{m*2};
                 end
             end
             %变异操作

@@ -2,7 +2,7 @@ clear all;
 
 NP=50;%种群规模NP
 
-GM=200;%最大迭代次数
+GM=400;%最大迭代次数
 
 p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
 
@@ -48,7 +48,7 @@ for i=1:NP
     ui{i}=[zeros(1,p+1) X{i} b*ones(1,p+1)];%方案1 均匀节点向量     
     [N{i},~,P{i}] = kongzhidingdian(M,n,p,x,ui{i},d);
     [~,R(i)]=shujudianwucha(M,N{i},P{i},d);
-    BIC(i)=Num*log(1+R(i))+25*log(Num)*(2*n-p+1);     
+    BIC(i)=Num*log(1+R(i))+log(Num)*(2*n-p+1);     
 end
 ui_=cell (1,50);
 for gen=1:GM
@@ -74,9 +74,9 @@ for gen=1:GM
             X_{i}=X{r(i)};
             if rand1<dp
                 X_{i}(randi(length(X_{i}),1,1))=[];
-%             else                
-%                 X_{i}(end+1)=a+(b-a)*rand;
-%                 X_{i}=sort(X_{i});
+            else                
+                X_{i}(end+1)=a+(b-a)*rand;
+                X_{i}=sort(X_{i});
             end
             nr(i)=length(X_{i});
         end
@@ -114,7 +114,7 @@ for gen=1:GM
        n_=length(ui_{m})-p-2;
        [N_{m},~,P_{m}] = kongzhidingdian(M,n_,p,x,ui_{m},d);
        [~,R_(m)]=shujudianwucha(M,N_{m},P_{m},d);
-       BIC_(m)=Num*log(1+R_(m))+25*log(Num)*(2*n_-p+1);     
+       BIC_(m)=Num*log(1+R_(m))+log(Num)*(2*n_-p+1);     
        
        if BIC_(m)<BIC(m)
            X{m}=V{m};

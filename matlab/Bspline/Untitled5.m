@@ -33,7 +33,25 @@ switch flag
         end
     case 2
         NodeVector = U_quasi_uniform(n, k); % 准均匀B样条的节点矢量
+        j=0;
+        
+        for u = 0 : 0.005 : 1-0.005
+    j=j+1;
+    for i = 0 : 1 : n
+        Nik(i+1, j) = BaseFunction(i, k , u, NodeVector);
+    end        
+        end
+        u=0 : 0.005 : 1-0.005;
+        plot(u,Nik)
+        
+        figure       
+        for i=1:5
+            subplot(5,1,i),plot(u,Nik(i,:));
+        end
+        
+        figure
         DrawSpline(n, k, P, NodeVector);
+        
     case 3
         NodeVector = U_piecewise_Bezier(n, k);  % 分段Bezier曲线的节点矢量
         DrawSpline(n, k, P, NodeVector);

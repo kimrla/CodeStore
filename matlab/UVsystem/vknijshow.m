@@ -2,7 +2,7 @@ clear all
 x=0:0.001:1;
 nmax=3;
 num=0;
-k=1;
+k=3;
 for n=1:nmax    
 % n=3;
     for i=1:k+1 

@@ -10,7 +10,7 @@ x=0:0.001:1;
 % end
 %     
 
-nmax=4;
+nmax=3;
 num=1;
 for k=1:3
     figure
