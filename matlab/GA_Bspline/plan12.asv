@@ -149,10 +149,8 @@ switch plan
                         iterationcounter=iterationcounter+1;
                     end
                 end
-                if length(newX{m})==length(X{m})
-                    if newX{m}==X{m}
-                        newX{m}=[];
-                    end
+                if length(newX{m}==X{m}
+                    newX{m}=[];
                 end
                 newui{m}=[zeros(1,p+1) newX{m} b*ones(1,p+1)];%方案1 均匀节点向量  
                 newn=length(newui{m})-p-2;
@@ -183,14 +181,10 @@ switch plan
             R=sortcomR(1:NP);
             ui=sortcomui(1:NP);
             
-%             [BICbest(gen),position(gen)]=min(BIC);
-%             neijiedianshuliang(gen)=length(X{position(gen)});
-%             bestP{gen}=P{position(gen)};
-%             bestui{gen}=ui{position(gen)};
-            BICbest(gen)=BIC(1);
-            neijiedianshuliang(gen)=length(X{1});
-            bestP{gen}=P{1};
-            bestui{gen}=ui{1};
+            [BICbest(gen),position(gen)]=min(BIC);
+            neijiedianshuliang(gen)=length(X{position(gen)});
+            bestP{gen}=P{position(gen)};
+            bestui{gen}=ui{position(gen)};
         end
         figure
         plot(x,f_,"*")
