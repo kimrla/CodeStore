@@ -1,4 +1,5 @@
 clear all;
+tic
 example=3;
 switch example
     case 1
@@ -65,23 +66,43 @@ switch plan
     case 2
         NP=50;%种群规模
         GM=200;%最大迭代次数
-        
+        TournamentSize=3;
+        empty_individual.Position = [];
+        empty_individual.Cost = [];
+        maxtime=30;
+        for t=1:maxtime
         for i=1:NP
 %             X{i}=sort(neijiedian(n,p,a,b)+normrnd(0,0.01,1,n-3));%初始种群并初始化
-            X{i}=sort(rand(1,n-3));
-            ui{i}=[zeros(1,p+1) X{i} b*ones(1,p+1)];%方案1 均匀节点向量     
-            [N{i},~,P{i}] = kongzhidingdian(M,n,p,x,ui{i},d);
-            [~,R(i)]=shujudianwucha(M,N{i},P{i},d);
-            BIC(i)=Num*log(1+R(i))+log(Num)*(2*n-p+1);     
+            pop(i).Position=sort(rand(1,n-3));
+%             ui{i}=[zeros(1,p+1) X{i} b*ones(1,p+1)];%方案1 均匀节点向量     
+%             [N{i},~,P{i}] = kongzhidingdian(M,n,p,x,ui{i},d);
+%             [~,R(i)]=shujudianwucha(M,N{i},P{i},d);
+%             BIC(i)=Num*log(1+R(i))+log(Num)*(2*n-p+1);     
+            pop(i).Cost=BIC(M,p,x,pop(i).Position,d,b,Num);
         end
-        ui_=cell (1,50);
+        Costs = [pop.Cost];
+        [Costs, SortOrder] = sort(Costs);
+        pop = pop(SortOrder);
+        % Store Best Solution
+        BestSol = pop(1);
+
+        % Array to Hold Best Cost Values
+        BestCost = zeros(GM, 1);
+
+%         % Store Cost
+%         WorstCost = pop(end).Cost;
+%         ui_=cell (1,50);
         for gen=1:GM
 %             newX=X;
-            %交叉操作
-            fitness_=mean(BIC);
-            minfitness=min(BIC);
-            for m=1:NP/2                
-                fitness=min([BIC(2*m-1) BIC(2*m)]);                
+
+%             轮盘选择操作
+            
+            fitness_=mean([pop.Cost]);
+            minfitness=min([pop.Cost]);
+            for m=1:NP/2
+                i1 = TournamentSelection(pop, TournamentSize);
+                i2 = TournamentSelection(pop, TournamentSize);
+                fitness=min([pop(i1).Cost pop(i2).Cost]);
                 if fitness<=fitness_
                     pc=(fitness-minfitness)/(fitness_-minfitness);                    
                 else
@@ -94,69 +115,117 @@ switch plan
                         c=cutpoint1;
                         cutpoint1=cutpoint2;
                         cutpoint2=c;
-                    end                    
-                    %交叉段
-                    crosstemp1=X{m*2-1}(X{m*2-1}>cutpoint1&X{m*2-1}<cutpoint2);
-                    crosstemp2=X{m*2}(X{m*2}>=cutpoint1&X{m*2}<=cutpoint2);
-                    
-                    temp1=X{m*2-1}(X{m*2-1}<cutpoint1|X{m*2-1}>cutpoint2);
-                    temp2=X{m*2}(X{m*2}<=cutpoint1|X{m*2}>=cutpoint2);
-                    newX{m*2-1}=sort([crosstemp1 temp2]);
-                    newX{m*2}=sort([crosstemp2 temp1]);
-%                     crosstemp1=X{m}(X{m}>cutpoint1&X{m}<cutpoint2);
-%                     crosstemp2=X{NP+1-m}(X{NP+1-m}>=cutpoint1&X{NP+1-m}<=cutpoint2);
-%                     
-%                     temp1=X{m}(X{m}<cutpoint1|X{m}>cutpoint2);
-%                     temp2=X{NP+1-m}(X{NP+1-m}<=cutpoint1|X{NP+1-m}>=cutpoint2);
-%                     newX{m}=sort([crosstemp1 temp2]);
-%                     newX{NP+1-m}=sort([crosstemp2 temp1]);
-                else 
-                    newX{m*2-1}=X{m*2-1};
-                    newX{m*2}=X{m*2};
-%                     newX{m}=X{m};
-%                     newX{NP+1-m}=X{NP+1-m};
+                    end              
+                    popc(2*m-1).Position=[pop(i1).Position(pop(i1).Position<cutpoint1),...
+                        pop(i2).Position(pop(i2).Position>cutpoint1&pop(i2).Position<cutpoint2),...
+                        pop(i1).Position(pop(i1).Position>cutpoint2)];
+                    popc(2*m).Position=[pop(i2).Position(pop(i2).Position<cutpoint1),...
+                        pop(i1).Position(pop(i1).Position>cutpoint1&pop(i1).Position<cutpoint2),...
+                        pop(i2).Position(pop(i2).Position>cutpoint2)];
+                else
+                    popc(2*m-1).Position=pop(i1).Position;
+                    popc(2*m).Position=pop(i2).Position;
                 end
+%                 n1=length([popc(2*m-1).Position])+p;
+%                 n2=length([popc(2*m).Position])+p;
+                popc(2*m-1).Cost=BIC(M,p,x,[pop(2*m-1).Position],d,b,Num);
+                popc(2*m).Cost=BIC(M,p,x,[pop(2*m).Position],d,b,Num);
             end
+%             %交叉操作
+%             
+%             for m=1:NP/2                
+%                 fitness=min([BIC(2*m-1) BIC(2*m)]);                
+%                 if fitness<=fitness_
+%                     pc=(fitness-minfitness)/(fitness_-minfitness);                    
+%                 else
+%                     pc=1;
+%                 end
+%                 if rand()<pc
+%                     cutpoint1=a+(b-a)*rand;
+%                     cutpoint2=a+(b-a)*rand;
+%                     if cutpoint1>cutpoint2
+%                         c=cutpoint1;
+%                         cutpoint1=cutpoint2;
+%                         cutpoint2=c;
+%                     end                    
+%                     %交叉段
+%                     crosstemp1=pop{m*2-1}(pop{m*2-1}>cutpoint1&pop{m*2-1}<cutpoint2);
+%                     crosstemp2=pop{m*2}(pop{m*2}>=cutpoint1&pop{m*2}<=cutpoint2);
+%                     
+%                     temp1=pop{m*2-1}(pop{m*2-1}<cutpoint1|pop{m*2-1}>cutpoint2);
+%                     temp2=pop{m*2}(pop{m*2}<=cutpoint1|pop{m*2}>=cutpoint2);
+%                     newX{m*2-1}=sort([crosstemp1 temp2]);
+%                     newX{m*2}=sort([crosstemp2 temp1]);
+% %                     crosstemp1=X{m}(X{m}>cutpoint1&X{m}<cutpoint2);
+% %                     crosstemp2=X{NP+1-m}(X{NP+1-m}>=cutpoint1&X{NP+1-m}<=cutpoint2);
+% %                     
+% %                     temp1=X{m}(X{m}<cutpoint1|X{m}>cutpoint2);
+% %                     temp2=X{NP+1-m}(X{NP+1-m}<=cutpoint1|X{NP+1-m}>=cutpoint2);
+% %                     newX{m}=sort([crosstemp1 temp2]);
+% %                     newX{NP+1-m}=sort([crosstemp2 temp1]);
+%                 else 
+%                     newX{m*2-1}=pop{m*2-1};
+%                     newX{m*2}=pop{m*2};
+% %                     newX{m}=X{m};
+% %                     newX{NP+1-m}=X{NP+1-m};
+%                 end
+%             end
             %变异操作
-            for m=1:NP
-                newui{m}=[zeros(1,p+1) newX{m} b*ones(1,p+1)];%方案1 均匀节点向量  
-                newn=length(newui{m})-p-2;
-                [newN{m},~,newP{m}] = kongzhidingdian(M,newn,p,x,newui{m},d);
-                [~,newR(m)]=shujudianwucha(M,newN{m},newP{m},d);
-                newBIC(m)=Num*log(1+newR(m))+log(Num)*(2*newn-p+1);                
-            end
-            newfitness_=mean(newBIC);
-            newminfitness=min(newBIC);
+%             for m=1:NP
+%                 newui{m}=[zeros(1,p+1) newX{m} b*ones(1,p+1)];%方案1 均匀节点向量  
+%                 newn=length(newui{m})-p-2;
+%                 [newN{m},~,newP{m}] = kongzhidingdian(M,newn,p,x,newui{m},d);
+%                 [~,newR(m)]=shujudianwucha(M,newN{m},newP{m},d);
+%                 newBIC(m)=Num*log(1+newR(m))+log(Num)*(2*newn-p+1);                
+%             end
+            newfitness_=mean([popc.Cost]);
+            newminfitness=min([popc.Cost]);
             for m=1:NP                
-                newfitness=newBIC(m);                
+                newfitness=popc(m).Cost;                
                 if newfitness<=newfitness_
                     pm=0.5*(newfitness-newminfitness)/(newfitness_-newminfitness);                    
                 else
                     pm=0.5;
                 end
                 iterationcounter=0;
-                long=length(newX{m});
+                long=length([popc(m).Position]);
                 while iterationcounter<long
                     if rand()<=pm
                         if rand()<=0.5
-                            newX{m}(end+1)=a+(b-a)*rand;
-                            newX{m}=sort(newX{m});
+                            popc(m).Position(end+1)=a+(b-a)*rand;
+                            popc(m).Position=sort(popc(m).Position);
                         else
-                            newX{m}(randi(length(newX{m}),1,1))=[];
+%                             newX{m}(randi(length(newX{m}),1,1))=[];
+                            popc(m).Position(randi(length(popc(m).Position),1,1))=[];
                         end
                         iterationcounter=iterationcounter+1;
                     else
                         iterationcounter=iterationcounter+1;
                     end
                 end
-                if length(newX{m}==X{m}
-                    newX{m}=[];
+                if length(popc(m).Position)==length(pop(m).Position)
+                    if popc(m).Position==pop(m).Position
+                        popc(m).Position=[];
+%                         popc(m).Cost=[];
+%                     else
+%                         popc(m).Cost=BIC(M,p,x,popc(m).Position,d,b,Num);
+                    end
+%                 else
+%                     popc(m).Cost=BIC(M,p,x,popc(m).Position,d,b,Num);
                 end
-                newui{m}=[zeros(1,p+1) newX{m} b*ones(1,p+1)];%方案1 均匀节点向量  
-                newn=length(newui{m})-p-2;
-                [newN{m},~,newP{m}] = kongzhidingdian(M,newn,p,x,newui{m},d);
-                [~,newR(m)]=shujudianwucha(M,newN{m},newP{m},d);
-                newBIC(m)=Num*log(1+newR(m))+log(Num)*(2*newn-p+1);
+                popc(m).Cost=BIC(M,p,x,popc(m).Position,d,b,Num);
+%                 if length(newX{m})==length(pop{m})
+%                     if newX{m}==pop{m}
+%                         newX{m}=[];
+%                     end
+%                 end
+%                 newn=length(popc(m).Position)+p;
+%                 newui{m}=[zeros(1,p+1) newX{m} b*ones(1,p+1)];%方案1 均匀节点向量  
+%                 newn=length(newui{m})-p-2;
+%                 [newN{m},~,newP{m}] = kongzhidingdian(M,newn,p,x,newui{m},d);
+%                 [~,newR(m)]=shujudianwucha(M,newN{m},newP{m},d);
+%                 newBIC(m)=Num*log(1+newR(m))+log(Num)*(2*newn-p+1);
+                
 %                 if newBIC(m)<BIC(m)
 %                    X{m}=newX{m};
 %                    BIC(m)=newBIC(m);
@@ -165,34 +234,62 @@ switch plan
 %                    ui{m}=newui{m};
 %                 end                
             end
-            comX=[X newX];
-            comBIC=[BIC newBIC];
-            comP=[P newP];
-            comR=[R newR];
-            comui=[ui newui];           
-            [sortBIC,index]=sort(comBIC);
-            sortcomX=comX(index);
-            sortcomP=comP(index);
-            sortcomR=comR(index);
-            sortcomui=comui(index);
-            BIC=sortBIC(1:NP);
-            X=sortcomX(1:NP);
-            P=sortcomP(1:NP);
-            R=sortcomR(1:NP);
-            ui=sortcomui(1:NP);
+            pop=[pop popc];
+            Costs = [pop.Cost];
+            [Costs, SortOrder] = sort(Costs);
+            pop = pop(SortOrder);
+            pop = pop(1:NP);
+            Costs = Costs(1:NP);
+            BestSol = pop(1);
+            BestCost(gen) = BestSol.Cost;
+            neijiedianshuliang(gen)=length(pop(1).Position);
+%             comX=[pop newX];
+%             comBIC=[BIC newBIC];
+%             comP=[P newP];
+%             comR=[R newR];
+%             comui=[ui newui];           
+%             [sortBIC,index]=sort(comBIC);
+%             sortcomX=comX(index);
+%             sortcomP=comP(index);
+%             sortcomR=comR(index);
+%             sortcomui=comui(index);
+%             BIC=sortBIC(1:NP);
+%             pop=sortcomX(1:NP);
+%             P=sortcomP(1:NP);
+%             R=sortcomR(1:NP);
+%             ui=sortcomui(1:NP);
             
-            [BICbest(gen),position(gen)]=min(BIC);
-            neijiedianshuliang(gen)=length(X{position(gen)});
-            bestP{gen}=P{position(gen)};
-            bestui{gen}=ui{position(gen)};
+%             [BICbest(gen),position(gen)]=min(BIC);
+%             neijiedianshuliang(gen)=length(X{position(gen)});
+%             bestP{gen}=P{position(gen)};
+%             bestui{gen}=ui{position(gen)};
+%             BICbest(gen)=BIC(1);
+%             neijiedianshuliang(gen)=length(pop{1});
+%             bestP{gen}=P{1};
+%             bestui{gen}=ui{1};
         end
+            if t==1
+                zuishaoneijiedian=neijiedianshuliang(end);
+                save besttest.mat
+            else
+                if neijiedianshuliang(end)<zuishaoneijiedian
+                zuishaoneijiedian=neijiedianshuliang(end);
+                save besttest.mat
+                end
+            end
+            
+        end
+        load besttest.mat
+        bestui=[zeros(1,p+1) pop(1).Position b*ones(1,p+1)];
+        [~,~,bestP] = kongzhidingdian(M,length(pop(1).Position)+p,p,x,bestui,d);
+        toc
         figure
         plot(x,f_,"*")
         hold on
-        DrawSpline(neijiedianshuliang(end)+p,p,bestP{end},bestui{end},a,b);
-        scatter(bestui{end},ones(1,length(bestui{end})))
+        DrawSpline(neijiedianshuliang(end)+p,p,bestP,bestui,a,b);
+        scatter(bestui,ones(1,length(bestui)))
         figure
-        plot(BICbest)
+        plot(BestCost)
         xlabel('迭代次数');
         ylabel('适应度');
         title('适应度进化曲线')

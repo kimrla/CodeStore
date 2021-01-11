@@ -69,7 +69,7 @@ empty_individual.Cost = [];
 pop = repmat(empty_individual, nPop, 1);
 
 for i = 1:nPop
-    
+%     VarSize=[1,randi(10)];
     % Initialize Position
     pop(i).Position = unifrnd(VarMin, VarMax, VarSize);
     
