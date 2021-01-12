@@ -1,6 +1,9 @@
 clear all;
+% 启动并行计算
+core_number=4;            %想要调用的处理器个数
+parpool('local',core_number);
 tic
-example=2;
+example=1;
 switch example
     case 1
         % 实验1
@@ -31,7 +34,7 @@ switch example
         lamda=0.05;
 end
 
-f_=f+normrnd(0,0.01,1,Num);
+f_=f+normrnd(0,1,1,Num);
 
 % plot(x,f_,"*")
 % hold on
@@ -42,7 +45,7 @@ M=length(x)-1; %论文中是0~M，所以总数length=M+1
 
 p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
 
-plan=1;
+plan=2;
 switch plan
     case 1
         ui=jiedianxiangliang(n,p,a,b);%方案1 均匀节点向量
@@ -67,8 +70,7 @@ switch plan
         NP=50;%种群规模
         GM=200;%最大迭代次数
         TournamentSize=3;
-        empty_individual.Position = [];
-        empty_individual.Cost = [];
+        
         maxtime=30;
         for t=1:maxtime
         for i=1:NP
@@ -180,7 +182,7 @@ switch plan
 %             end
             newfitness_=mean([popc.Cost]);
             newminfitness=min([popc.Cost]);
-            for m=1:NP                
+            parfor m=1:NP                
                 newfitness=popc(m).Cost;                
                 if newfitness<=newfitness_
                     pm=0.5*(newfitness-newminfitness)/(newfitness_-newminfitness);                    
@@ -296,3 +298,5 @@ switch plan
         figure
         plot(neijiedianshuliang)
 end
+% 关闭并行计算
+delete(gcp('nocreate'));
