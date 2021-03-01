@@ -272,13 +272,19 @@ switch plan
         end
             if t==1
                 zuishaoneijiedian=neijiedianshuliang(end);
-                save besttest.mat
+                nbest=1;
+                save besttest.mat                
             else
                 if neijiedianshuliang(end)<zuishaoneijiedian
                 zuishaoneijiedian=neijiedianshuliang(end);
+                nbest=1;
                 save besttest.mat
+                elseif neijiedianshuliang(end)==zuishaoneijiedian
+                    nbest=nbest+1;
+                    save besttest.mat nbest
                 end
             end
+            
             
         end
         load besttest.mat
