@@ -2,20 +2,22 @@ clear all;
 
 NP=50;%种群规模NP
 
-GM=400;%最大迭代次数
+GM=200;%最大迭代次数
 
 p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
+example=1;
+switch example
+    case 1
 
-% % 实验1
-% x=0:0.005:1-0.005;
-% f=90./(1+exp(-100*(x-0.4)));
-% n=8;%内节点个数n-p
-% lamda=0.025;%节点率λ
-% dp=0.6;%删除概率
-% Num=length(x);%采样点个数
-% a=min(x);
-% b=max(x);
-
+x=0:0.005:1-0.005;
+f=90./(1+exp(-100*(x-0.4)));
+n=8;%内节点个数n-p
+lamda=0.025;%节点率λ
+dp=0.6;%删除概率
+Num=length(x);%采样点个数
+a=min(x);
+b=max(x);
+    case 2
 % 实验2
 x=0:0.05:10-0.05;
 f=100./exp(abs(x-5))+(x-5).^2/500;
@@ -25,8 +27,8 @@ dp=0.6;
 Num=length(x);
 a=min(x);
 b=max(x);
-
-f_=f+normrnd(0,0.01,1,Num);%加随机扰动
+end
+f_=f+normrnd(0,1,1,Num);%加随机扰动
 
 
 % plot(x,f_,"*")
