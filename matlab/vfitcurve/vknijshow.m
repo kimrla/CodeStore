@@ -1,6 +1,6 @@
 clear all
 x=0:0.001:1;
-nmax=3;
+nmax=4;
 num=0;
 k=3;
 for n=1:nmax    
