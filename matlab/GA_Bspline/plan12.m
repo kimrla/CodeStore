@@ -1,6 +1,6 @@
 clear all;
 % 启动并行计算
-core_number=4;            %想要调用的处理器个数
+core_number=2;            %想要调用的处理器个数
 parpool('local',core_number);
 tic
 example=1;
@@ -71,7 +71,7 @@ switch plan
         GM=200;%最大迭代次数
         TournamentSize=3;
         
-        maxtime=30;
+        maxtime=1;
         for t=1:maxtime
         for i=1:NP
 %             X{i}=sort(neijiedian(n,p,a,b)+normrnd(0,0.01,1,n-3));%初始种群并初始化
