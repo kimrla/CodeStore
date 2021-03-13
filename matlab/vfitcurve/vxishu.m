@@ -1,4 +1,4 @@
-function lamda = vxishu(k,N,M,t,d)
+function [V,lamda] = vxishu(k,N,M,t,d)
 %VXISHU 此处显示有关此函数的摘要
 %   此处显示详细说明
 
@@ -11,8 +11,8 @@ for m=1:M
             j=1;
         else
         group=ceil(log2(n/(k+1))+1);
-        i=ceil((N-(k+1)*2^(group-2))/2^(group-2));
-        j=mod((N-(k+1)*2^(group-2)),2^(group-2));
+        i=ceil((n-(k+1)*2^(group-2))/2^(group-2));
+        j=mod((n-(k+1)*2^(group-2)),2^(group-2));
         if j==0
             j=2^(group-2);
         end

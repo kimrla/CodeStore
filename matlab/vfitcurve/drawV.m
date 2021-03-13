@@ -18,8 +18,8 @@ for x = 0: 0.001 : 1-0.001
             j=1;
         else
         group=ceil(log2(n/(k+1))+1);
-        i=ceil((N-(k+1)*2^(group-2))/2^(group-2));
-        j=mod((N-(k+1)*2^(group-2)),2^(group-2));
+        i=ceil((n-(k+1)*2^(group-2))/2^(group-2));
+        j=mod((n-(k+1)*2^(group-2)),2^(group-2));
         if j==0
             j=2^(group-2);
         end
