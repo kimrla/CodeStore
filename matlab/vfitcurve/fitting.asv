@@ -1,5 +1,5 @@
 clear
-example=3;
+example=1;
 switch example
     case 1
         % 实验1
@@ -41,7 +41,7 @@ f=f';
 % %     subplot(N,1,i),plot(x,V(:,i))
 % % end
 k = 1;
-N = 6;
+N = 4;
 A = LSMatrix_V(k,N,t);
 
 plan=2;
@@ -77,8 +77,6 @@ Y=A\f;
 %             7/8,7/8,0;];
      CList=zeros(2^(N-1)-1,3);
      CList(:,1)=1/(2^(N-1)):1/(2^(N-1)):(2^(N-1)-1)/(2^(N-1));
-     CList(:,2)=CList(:,1);
-      CList(16,:)=[];
      p = sum(CList(:,3)+1);  % 约束方程数目
 SegNum = 2^(N-1); % 分段数
 VNum = 2^N;       % 基函数数目
@@ -109,8 +107,7 @@ end
 InfoV1Bas = BaseGene_V1(N);   % 1次V系统基函数信息(非离散采样)
 [VRInfo,NumSeg] = VReconstruction_Polyline([X Y],InfoV1Bas);
 figure,
-plot(t,f,'.','Color',[255 102 102]/255,'MarkerSize',10);hold on
+plot(x,f,'.','Color',[255 102 102]/255,'MarkerSize',10);hold on
 for j = 1 : NumSeg
     plot(VRInfo(j,5:6),VRInfo(j,7:8),'Color',[0 102 153]/255,'LineWidth',1.5);hold on
 end
-xlim([0 1])
