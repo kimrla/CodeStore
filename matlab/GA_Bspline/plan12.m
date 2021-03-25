@@ -1,9 +1,9 @@
-clear all;
+lear all;
 % 启动并行计算
-core_number=2;            %想要调用的处理器个数
-parpool('local',core_number);
+% core_number=2;            %想要调用的处理器个数
+% parpool('local',core_number);
 tic
-example=1;
+example=2;
 switch example
     case 1
         % 实验1
@@ -49,6 +49,7 @@ plan=2;
 switch plan
     case 1
         ui=jiedianxiangliang(n,p,a,b);%方案1 均匀节点向量
+        ui=[0,0,0,0,0,0,4,4,5,6,6,9.95,9.95,9.95,9.95,9.95,9.95,9.95];
 
 
 %         u=0:0.005:1-0.005;
@@ -68,7 +69,7 @@ switch plan
         [epsilon,e] = shujudianwucha(M,N,P,d);
     case 2
         NP=50;%种群规模
-        GM=200;%最大迭代次数
+        GM=3;%最大迭代次数
         TournamentSize=3;
         
         maxtime=1;
@@ -305,4 +306,4 @@ switch plan
         plot(neijiedianshuliang)
 end
 % 关闭并行计算
-delete(gcp('nocreate'));
+% delete(gcp('nocreate'));

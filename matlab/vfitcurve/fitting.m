@@ -1,4 +1,4 @@
-clear
+lear
 example=3;
 switch example
     case 1
