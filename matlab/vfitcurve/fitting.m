@@ -1,5 +1,5 @@
 clear
-example=4;
+example=2;
 switch example
     case 1
         % 实验1
@@ -10,7 +10,7 @@ switch example
         xmax=1;
     case 2
         % 实验2
-        x=0:0.05:10-0.05;
+        x=0:0.02:10-0.02;
         f=100./exp(abs(x-5))+(x-5).^5/500;        
 %         M=length(x);%采样点个数  
 %         N=128;%基函数个数
@@ -50,10 +50,10 @@ f=f';
 % %     subplot(N,1,i),plot(x,V(:,i))
 % % end
 k = 1;
-N = 6;
+N = 7;
 A = LSMatrix_V(k,N,t);
 
-plan=2;
+plan=1;
 switch plan
     case 1
 % % Show
@@ -87,7 +87,7 @@ Y=A\f;
      CList=zeros(2^(N-1)-1,3);
      CList(:,1)=1/(2^(N-1)):1/(2^(N-1)):(2^(N-1)-1)/(2^(N-1));
      CList(:,2)=CList(:,1);
-      CList(16,:)=[];
+%       CList(16,:)=[];
      p = sum(CList(:,3)+1);  % 约束方程数目
 SegNum = 2^(N-1); % 分段数
 VNum = 2^N;       % 基函数数目
@@ -115,6 +115,7 @@ Y = M\by;
 X = X(1:VNum);
 Y = Y(1:VNum);
 end
+
 InfoV1Bas = BaseGene_V1(N);   % 1次V系统基函数信息(非离散采样)
 [VRInfo,NumSeg] = VReconstruction_Polyline([X Y],InfoV1Bas);
 figure,
@@ -123,3 +124,9 @@ for j = 1 : NumSeg
     plot(VRInfo(j,5:6),VRInfo(j,7:8),'Color',[0 102 153]/255,'LineWidth',1.5);hold on
 end
 xlim([0 1])
+% figure
+% bar(abs(Y))
+% %找到最大的lamda
+% n=22;
+% [group,i,j] = findv(n,k);
+% position=(j)/2^(group-2);
