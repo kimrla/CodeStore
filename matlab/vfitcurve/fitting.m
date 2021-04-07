@@ -50,7 +50,7 @@ f=f';
 % %     subplot(N,1,i),plot(x,V(:,i))
 % % end
 k = 1;
-N = 7;
+N = 5;
 A = LSMatrix_V(k,N,t);
 
 plan=1;
@@ -124,9 +124,9 @@ for j = 1 : NumSeg
     plot(VRInfo(j,5:6),VRInfo(j,7:8),'Color',[0 102 153]/255,'LineWidth',1.5);hold on
 end
 xlim([0 1])
-% figure
-% bar(abs(Y))
+figure
+bar(abs(Y))
 % %找到最大的lamda
-% n=22;
+% n=20;
 % [group,i,j] = findv(n,k);
-% position=(j)/2^(group-2);
+% position=(2*j-1)/2^(group-1);
