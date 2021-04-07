@@ -126,7 +126,8 @@ end
 xlim([0 1])
 figure
 bar(abs(Y))
-% %找到最大的lamda
-% n=20;
+%找到最大的lamda
+lastN=abs(Y((k+1)*2^(N-2)+1:(k+1)*2^(N-1)));
+
 % [group,i,j] = findv(n,k);
 % position=(2*j-1)/2^(group-1);
