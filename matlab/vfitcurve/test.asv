@@ -1,8 +1,0 @@
-clear
-x=0:0.05:10-0.05;
-f=@(x) 100./exp(abs(x-5))+(x-5).^2/500;
-for i=1:length(x)
-    g(i)=intergral(f,)
-
-
-
