@@ -1,5 +1,5 @@
 clear
-example=3;
+example=1;
 switch example
     case 1
         % 实验1
@@ -30,8 +30,30 @@ switch example
             f(i)=1/wide*integral(y,x(i)-wide/2,x(i)+wide/2);
         end
         xmax=10;
-        
+    case 5
+        x=-2:0.04:2-0.04;
+        f=sin(x)+2*exp(-30*x.^2);
+        x=x+2;
+        xmax=4;
+    case 6
+        x=-2:0.04:2-0.04;
+        f=sin(2*x)+2*exp(-16*x.^2)+2;
+        x=x+2;
+        xmax=4;
+    case 7
+        x=0:0.005:1-0.005;
+        f=4*x.^2.*(3-4*x).*(0<=x&x<0.5)+(4/3*x.*(4*x.^2-10*x+7)-3/2).*(0.5<=x&x<0.75)+(16/3*x.*(x-1).^2).*(0.75<=x&x<=1);
+        xmax=1;
+    case 8
+        x=0:0.005:1-0.005;
+        f=2*sin(4*pi*x)-6*(abs(x-0.4)).^0.3-0.5*sign(0.7-x);
+        xmax=1;
+    case 9
+        x=0:0.005:1-0.005;
+        f=sin(4*x-2)+2*exp(-30*(4*x-2).^2);
+        xmax=1;
 end
+
 % f_=f+normrnd(0,1,1,M);
 
 % k=1;%次数
@@ -53,7 +75,7 @@ k = 1;
 N = 7;
 A = LSMatrix_V(k,N,t);
 
-plan=3;
+plan=1;
 
 
 switch plan
