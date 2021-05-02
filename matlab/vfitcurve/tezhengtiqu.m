@@ -53,7 +53,14 @@ end
     y=1-p(:,1);
     plot(x,y,'.')
     d=[x,y];
-    t=canshuhua();
+    d=d';
+    t=canshuhua(M,d);
+    
+    k=1;
+    N=7;
+    
+    
+    
 
 
 
