@@ -1,6 +1,6 @@
 clear
-im=imread('d:\Users\J\图片\实验\shuye1.png');
-% imshow(im);
+im=imread('d:\Users\J\图片\实验\xiaoniao1.png');
+imshow(im);
 bw = im2bw( im );     
 
 % figure  
@@ -39,8 +39,8 @@ newB=newB/maxb;
 % plot(x,y,'.')
 % newB=rot90(newB,3);
 % newB=newB';
-% figure
-% plot(newB(:,1),newB(:,2),'.')
+figure
+plot(newB(:,1),newB(:,2),'.')
 figure
 M=200;
 for i=1:M
@@ -52,15 +52,15 @@ end
     x=p(:,2);
     y=1-p(:,1);
     plot(x,y,'.')
-    d=[x,y];
-    d=d';
-    t=canshuhua(M,d);
-    
-    k=1;
-    N=7;
-    
-    
-    
-
-
-
+%     d=[x,y];
+%     d=d';
+%     t=canshuhua(M,d);
+%     
+%     k=1;
+%     N=7;
+%     
+%     
+%     
+% 
+% 
+% 
