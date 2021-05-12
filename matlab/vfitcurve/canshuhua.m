@@ -6,6 +6,8 @@ ds=0;
 for j=1:M-1
     ds=ds+norm(d(j+1,:)-d(j,:))^0.5;
 end
+% j=1:M-1;
+% ds=sum(norm(d(j+1,:)-d(j,:))^0.5);
 for i=1:M-1
     t(i+1)=t(i)+norm(d(i+1,:)-d(i,:))^0.5/ds;
 end%参数化完成

@@ -79,6 +79,7 @@ for i=1:size(lcp,2)
 end
 
 gpoint=cell2mat(gpcp);
+save fire200.mat gpoint num
 % 
 % for i=1:length(gpoint)
 %     pause(0.1)

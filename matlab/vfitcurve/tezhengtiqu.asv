@@ -17,7 +17,7 @@ for i=1:num
         q(i)=1;
     end
 end
-tezhengt=t(q==1);
+
 
 
 
