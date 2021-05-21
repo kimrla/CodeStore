@@ -1,6 +1,6 @@
 clear
-load fire200.mat
-t=huancanshuhua(num,gpoint);
+load yezi600.mat
+t=huancanshuhua(gpoint);
 for i=1:num
     [phi(i),K(i)]=qulv(gpoint,i,num);
 end
@@ -13,13 +13,13 @@ for i=1:num
     elseif i==num
         r=1;
     end
-    if K(i)>K(r) && K(i)>K(l) && phi(i)>pi/2
+    if K(i)>K(r) && K(i)>K(l) && phi(i)>pi/4
         q(i)=1;
     end
 end
 tezhengt=t(q==1);
 leastduanshu=ceil(log2(length(tezhengt)));
-leastn=leastduanshu+1;
+
 for i=1:length(tezhengt)
     newtezhengt(i)=dec2xiaoshu(xiaoshu2dec(tezhengt(i),leastduanshu));
 end
@@ -36,53 +36,56 @@ for i=2:length(tlist)
     newt(j)=(t(j)-t(tlist(i-1)))*(newtezhengt(i)-newtezhengt(i-1))/(tezhengt(i)-tezhengt(i-1))+newt(tlist(i-1));   
 end
     newt(tlist(end)+1:num)=(t(tlist(end)+1:num)-t(tlist(end)))*(1-newtezhengt(end))/(1-tezhengt(end))+newt(tlist(end));
-    
+    leastn=leastduanshu+1;
 
 newt=newt';
-k=1;
-N=8;
-if leastduanshu>N
-    N=leastduanshu;
+k=3;
+N=5;
+if leastn>N
+    N=leastn;
 end
 
-A = LSMatrix_V(k,N,newt);
+% A = LSMatrix_V(k,N,newt);
 [DR,DL] = VContinuityInfo1(N);
 CList=zeros(2^(N-1)-1,3);
 CList(:,1)=1/(2^(N-1)):1/(2^(N-1)):(2^(N-1)-1)/(2^(N-1));
 CList(:,2)=CList(:,1);
-CList(ismember(CList(:,1),newtezhengt),:)=[];
-p = sum(CList(:,3)+1);  % 约束方程数目
-        SegNum = 2^(N-1); % 分段数
-        VNum = 2^N;       % 基函数数目
-        knots = linspace(0,1,SegNum+1);% 节点向量
-        C = zeros(p,VNum);    % 约束矩阵
-        csidx = 0;
-        for h = 1 : length(CList)           % 给每个约束建立相应的方程组
-            x1 = find(knots==CList(h,1));   % 左节点
-            x2 = find(knots==CList(h,2));   % 右节点
-            for c = 0 : CList(h,3)          % 从C^0约束至C^CList(h,3)约束，每个约束建立一个方程
-                csidx = csidx + 1;
-                C(csidx,:) = [DR(:,x1,c+1) - DL(:,x2,c+1)]';
-            end
-        end
-        
-        M = [2*A'*A,C';
-            C,zeros(p)];
-        d = zeros(p,1);
-        bx = [2*A'*gpoint(:,1);d];
-        by = [2*A'*gpoint(:,2);d];
-        
-        X = M\bx;
-        Y = M\by;
-        
-        X = X(1:VNum);
-        Y = Y(1:VNum);
+CList(:,3)=2;
+CList(ismember(CList(:,1),newtezhengt),3)=0;
+Lambda = LSCurFit_V(gpoint,k,N,newt,CList);
+                                                                    % p = sum(CList(:,3)+1);  % 约束方程数目
+                                                                    %         SegNum = 2^(N-1); % 分段数
+                                                                    %         VNum = 2^N;       % 基函数数目
+                                                                    %         knots = linspace(0,1,SegNum+1);% 节点向量
+                                                                    %         C = zeros(p,VNum);    % 约束矩阵
+                                                                    %         csidx = 0;
+                                                                    %         for h = 1 : length(CList)           % 给每个约束建立相应的方程组
+                                                                    %             x1 = find(knots==CList(h,1));   % 左节点
+                                                                    %             x2 = find(knots==CList(h,2));   % 右节点
+                                                                    %             for c = 0 : CList(h,3)          % 从C^0约束至C^CList(h,3)约束，每个约束建立一个方程
+                                                                    %                 csidx = csidx + 1;
+                                                                    %                 C(csidx,:) = [DR(:,x1,c+1) - DL(:,x2,c+1)]';
+                                                                    %             end
+                                                                    %         end
+                                                                    %         
+                                                                    %         M = [2*A'*A,C';
+                                                                    %             C,zeros(p)];
+                                                                    %         d = zeros(p,1);
+                                                                    %         bx = [2*A'*gpoint(:,1);d];
+                                                                    %         by = [2*A'*gpoint(:,2);d];
+                                                                    %         
+                                                                    %         X = M\bx;
+                                                                    %         Y = M\by;
+                                                                    %         
+                                                                    %         X = X(1:VNum);
+                                                                    %         Y = Y(1:VNum);
 %         figure
-%         nx=A*X;
+%         A = LSMatrix_V(k,N,newt);
+%         nx=A*Lambda(:,1);
 %         nx(end+1)=nx(1);
-%         ny=A*Y;
+%         ny=A*Lambda(:,2);
 %         ny(end+1)=ny(1);
-%         plot(nx,ny)
+%         plot(nx,ny,'.')
 
 
 % figure
@@ -97,14 +100,14 @@ p = sum(CList(:,3)+1);  % 约束方程数目
 % matrixLamda=abs(matrixLamda);
 % imagesc(matrixLamda(:,2:N))
 % colorbar
-
-InfoV1Bas = BaseGene_V1(N);   % 1次V系统基函数信息(非离散采样)
-[VRInfo,NumSeg] = VReconstruction_Polyline([X Y],InfoV1Bas);
-figure,
-plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',10);hold on
-for j = 1 : NumSeg
-    plot(VRInfo(j,5:6),VRInfo(j,7:8),'Color',[0 102 153]/255,'LineWidth',1.5);hold on
-end
+                        % 
+                        % InfoV1Bas = BaseGene_V1(N);   % 1次V系统基函数信息(非离散采样)
+                        % [VRInfo,NumSeg] = VReconstruction_Polyline([X Y],InfoV1Bas);
+                        % figure,
+                        % plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',10);hold on
+                        % for j = 1 : NumSeg
+                        %     plot(VRInfo(j,5:6),VRInfo(j,7:8),'Color',[0 102 153]/255,'LineWidth',1.5);hold on
+                        % end
 % nx=A*X;
 % nx(end+1)=nx(1);
 % ny=A*Y;
@@ -112,7 +115,11 @@ end
 % plot(nx,ny,'Color',[0 102 153]/255,'LineWidth',1.5)
 
 
-
+figure,
+plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15);hold on
+VCompose(Lambda,k,N)
+axis equal
+axis off
 
 
 
