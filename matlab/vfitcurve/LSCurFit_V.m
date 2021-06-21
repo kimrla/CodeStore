@@ -10,6 +10,7 @@ function Lambda = LSCurFit_V(P,k,N,t,CList)
 %  LChord = csl(end)+norm(P(1,:)-P(end,:))^0.5;
 %  t = csl / LChord;
 %  
+
  %% ÏµÊý¾ØÕó
  A = LSMatrix_V(k,N,t);
  

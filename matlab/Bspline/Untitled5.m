@@ -4,7 +4,7 @@ clear all;
 P = [91.5,414.2;122,244;232,86;358.5,9];
 P=P';
  
-n = 3; k = 3;
+n = 1; k = 1;
  
 flag = 2;
 % flag = 1，绘制均匀B样条曲线
@@ -33,21 +33,21 @@ switch flag
 %         end
     case 2
         NodeVector = U_quasi_uniform(n, k); % 准均匀B样条的节点矢量
-%         j=0;
-%         
-%         for u = 0 : 0.005 : 1-0.005
-%     j=j+1;
-%     for i = 0 : 1 : n
-%         Nik(i+1, j) = BaseFunction(i, k , u, NodeVector);
-%     end        
-%         end
-%         u=0 : 0.005 : 1-0.005;
-%         plot(u,Nik)
-%         
-%         figure       
-%         for i=1:5
-%             subplot(5,1,i),plot(u,Nik(i,:));
-%         end
+        j=0;
+        
+        for u = 0 : 0.005 : 1-0.005
+    j=j+1;
+    for i = 0 : 1 : n
+        Nik(i+1, j) = BaseFunction(i, k , u, NodeVector);
+    end        
+        end
+        u=0 : 0.005 : 1-0.005;
+        plot(u,Nik)
+        
+        figure       
+        for i=1:5
+            subplot(5,1,i),plot(u,Nik(i,:));
+        end
         
         figure
         [X,Y]=DrawSpline(n, k, P, NodeVector);

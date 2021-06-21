@@ -38,8 +38,8 @@ switch example
         f=gpoint(:,2)';
 end
 
-% f_=f+normrnd(0,1,1,Num);
-f_=f;
+f_=f+normrnd(0,1,1,Num);
+
 % plot(x,f_,"*")
 % hold on
 % plot(x,f)
@@ -49,7 +49,7 @@ M=length(x)-1; %论文中是0~M，所以总数length=M+1
 
 p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
 
-plan=1;
+plan=2;
 switch plan
     case 1
         ui=jiedianxiangliang(n,p,a,b);%方案1 均匀节点向量

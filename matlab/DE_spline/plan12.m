@@ -41,19 +41,19 @@ p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
 
 
 
-plan=2;
+plan=1;
 switch plan
     case 1
         ui=jiedianxiangliang(n,p,a,b);%方案1 均匀节点向量
 
 
-        % u=0:0.01:1;
-        % for j=1:n+1
-        %     for i=1:length(u)
-        %         Njp_u(i,j) = Njp(j, p , u(i), ui);  
-        %     end
-        %     subplot(5,5,j),plot(u,Njp_u(:,j));
-        % end
+        u=0:0.01:1;
+        for j=1:n+1
+            for i=1:length(u)
+                Njp_u(i,j) = Njp(j, p , u(i), ui);  
+            end
+            subplot(5,5,j),plot(u,Njp_u(:,j));
+        end
 
 
         [Num,R,P] = kongzhidingdian(M,n,p,x,ui,d);
