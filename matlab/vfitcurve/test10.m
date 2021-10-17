@@ -11,7 +11,7 @@ figure,
 plot(x,Y);
 
 k = 1;
-N = 4;
+N = 5;
 A = LSMatrix_V(k,N,x);
 
 X = A\Y;

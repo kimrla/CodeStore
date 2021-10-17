@@ -1,6 +1,28 @@
 clear
-load fenghuang2000.mat
+plan=5;
+switch plan
+    case 1
+        load bird200.mat
+        N=4;
+    case 2
+        load fire500.mat
+        N=4;
+    case 3
+        load yezi600.mat
+        N=4;
+    case 4
+        load shizi1500.mat
+        N=4;
+    case 5
+        load fenghuang2000.mat
+        N=10;
+end
+% load zsy.mat
+% gpoint=new_C{1};
 t=huancanshuhua(gpoint);
+% gpoint=[gpoint;gpoint(1,:)];
+% t=canshuhua(gpoint);
+% gpoint=gpoint/max(max(gpoint));
 num=length(gpoint);
 for i=1:num
     [phi(i),K(i)]=qulv(gpoint,i,num);
@@ -14,15 +36,19 @@ for i=1:num
     elseif i==num
         r=1;
     end
-    if K(i)>K(r) && K(i)>K(l)
-        %         && phi(i)>pi/10        &&K(i)>3*mean(K)
+    if K(i)>K(r) && K(i)>K(l) && phi(i)>pi/6
+        %         && phi(i)>pi/6        &&K(i)>3*mean(K)
         q(i)=1;
     end
 end
 
-% tezhengt=t(q==1);
+tezhengt=t(q==1);
+% fenduandian(end+1)=50;
+% fenduandian(end+1)=2001;
+% fenduandian(end+1)=1950;
 
-tezhengt=t(fenduandian);
+% fenduandian=sort(fenduandian);
+% tezhengt=t(fenduandian);
 
 
 
@@ -30,34 +56,34 @@ leastduanshu=ceil(log2(length(tezhengt)));
 
 
 %
-% for i=1:length(tezhengt)
-%     newtezhengt(i)=dec2xiaoshu(xiaoshu2dec(tezhengt(i),leastduanshu));
-% end
-% while length(newtezhengt)-length(unique(newtezhengt))
-%     leastduanshu=leastduanshu+1;
-%     for i=1:length(tezhengt)
-%     newtezhengt(i)=dec2xiaoshu(xiaoshu2dec(tezhengt(i),leastduanshu));
-%     end
-% end
+for i=1:length(tezhengt)
+    newtezhengt(i)=dec2xiaoshu(xiaoshu2dec(tezhengt(i),leastduanshu));
+end
+while length(newtezhengt)-length(unique(newtezhengt))
+    leastduanshu=leastduanshu+1;
+    for i=1:length(tezhengt)
+        newtezhengt(i)=dec2xiaoshu(xiaoshu2dec(tezhengt(i),leastduanshu));
+    end
+end
 
 k=3;
-N=7;
+
 leastn=leastduanshu+1;
 if leastn>N
     N=leastn;
 end
 
-newtezhengt=0:floor((2^(leastduanshu))/(length(tezhengt)-1))/(2^(leastduanshu)):(length(tezhengt)-1)*floor((2^(leastduanshu))/(length(tezhengt)-1))/(2^(leastduanshu));
+% newtezhengt=0:floor((2^(leastduanshu))/(length(tezhengt)-1))/(2^(leastduanshu)):(length(tezhengt)-1)*floor((2^(leastduanshu))/(length(tezhengt)-1))/(2^(leastduanshu));
 
 % newtezhengt=0:floor((2^(N-1))/(length(tezhengt)-1))/(2^(N-1)):(length(tezhengt)-1)*floor((2^(N-1))/(length(tezhengt)-1))/(2^(N-1));
 
 
-% newt(q==1)=newtezhengt;
-% tlist=find(q);
+newt(q==1)=newtezhengt;
+tlist=find(q);
 
-
-newt(fenduandian)=newtezhengt;
-tlist=fenduandian;
+%
+% newt(fenduandian)=newtezhengt;
+% tlist=fenduandian;
 
 for i=2:length(tlist)
     j=tlist(i-1)+1:tlist(i)-1;
@@ -69,7 +95,7 @@ newt=newt';
 
 
 % A = LSMatrix_V(k,N,newt);
-[DR,DL] = VContinuityInfo1(N);
+% [DR,DL] = VContinuityInfo1(N);
 CList=zeros(2^(N-1)-1,3);
 CList(:,1)=1/(2^(N-1)):1/(2^(N-1)):(2^(N-1)-1)/(2^(N-1));
 CList(:,2)=CList(:,1);
@@ -77,7 +103,44 @@ CList(:,3)=2;
 CList(ismember(CList(:,1),newtezhengt),3)=0;
 CList(end+1,:)=[0,1,0];
 Lambda = LSCurFit_V(gpoint,k,N,newt,CList);
-cost=wucha(k,N,newt,Lambda,gpoint);
+Lambda(all(abs(Lambda)<=10^(-3),2),:)=0;
+[fitc,cost]=wucha(k,N,newt,Lambda,gpoint);
+meanwc=cost(end)/length(gpoint);
+
+tlistname=['tlist',num2str(plan),'.mat'];
+save (tlistname,'tlist','plan')
+
+tezhengc=LSMatrix_V(k,N,newtezhengt')*Lambda;
+
+tzwuchaV=vecnorm((tezhengc-gpoint(tlist,:)),2,2);
+tzwcname=['tzwuchaV',num2str(plan),'.mat'];
+save (tzwcname,'tzwuchaV') 
+% for i=1:length(tlist)
+tlist(end+1)=length(gpoint);
+wcrate=diff(cost(tlist))./diff(tlist);
+% end
+
+[~,jc]=max(wcrate);
+u=tlist(jc)+1:tlist(jc+1)-1;
+% % 
+% N=N+1;
+% CListp(:,1)=newt(tlist(jc)):1/(2^(N-1)):newt(tlist(jc+1));
+% CListp(:,2)=CListp(:,1);
+% CListp(:,3)=2;
+% FP=fitc(u,:)-gpoint(u,:);
+% Lplus=fitjiaceng(FP,k,N,newt,u,CListp);
+% 
+% Lambda=[Lambda;Lplus];
+% [~,costs]=wucha(k,N,newt,Lambda,gpoint);
+% wcrate2=diff(costs(tlist))./diff(tlist);
+
+% for i=tlist(jc)+1:tlist(jc+1)-1
+% SIsi(i)=abs(SIse(K,tlist(jc),i,newt,gpoint)-0.5*SIse(K,tlist(jc),tlist(jc+1),newt,gpoint));
+% end
+% [~,Pnew]=min(SIsi(tlist(jc)+1:tlist(jc+1)-1));
+% Pnew=Pnew+tlist(jc);
+% newt(Pnew)
+
 
 
 
@@ -164,20 +227,26 @@ cost=wucha(k,N,newt,Lambda,gpoint);
 
 figure,
 plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15);hold on
-VCompose(Lambda,k,N)
-fenduan=1/(2^(N-2)):1/(2^(N-2)):(2^(N-2)-1)/(2^(N-2));
-A=LSMatrix_V(k,N,fenduan');
-jiedian=A*Lambda;
-T=LSMatrix_V(k,N,newtezhengt')*Lambda;
-scatter(jiedian(:,1),jiedian(:,2),'b')
+% 
+% fenduan=1/(2^(N-2)):1/(2^(N-2)):(2^(N-2)-1)/(2^(N-2));
+% A=LSMatrix_V(k,N,fenduan');
+% jiedian=A*Lambda;
+% T=LSMatrix_V(k,N,newtezhengt')*Lambda;
+
+% scatter(jiedian(:,1),jiedian(:,2),'b')
 % hold on
-scatter(T(:,1),T(:,2),'g')
+% plot(T(:,1),T(:,2),'gs','color',[0 102 153]/255,'MarkerSize',10)
+VCompose(Lambda,k,N)
+% legend('原始数据点','特征点','拟合曲线')
+legend('原始数据点','拟合曲线')
 axis equal
 axis off
-
+% plot(gpoint(u,1),gpoint(u,2),'.','Color',[255 0 102]/255,'MarkerSize',15);
+Lambda(all(Lambda~=0,2),3)=find(all(Lambda~=0,2));
 Lambda(all(Lambda==0,2),:)=[];
 
-
+% nodes = [0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4];
+% treeplot(nodes,'[0 0 1]')
 
 
 
@@ -236,15 +305,24 @@ end
 y=sum(temp);
 end
 
-function y=wucha(k,N,t,lambda,P)
+function [c,y]=wucha(k,N,t,lambda,P)
 c=LSMatrix_V(k,N,t)*lambda;
 y=cumsum(vecnorm((c-P),2,2));
 end
 
+function Kse=qulvjinsi(K,s,e,u)
+i=s:e-1;
+Kse=sum((K(i)+K(i+1)).*(u(i+1)-u(i))'/2);
+end
 
+function Lse=huchangjinsi(s,e,gpoint)
+Lse=sum(vecnorm(diff(gpoint(s:e)),2,2));
+end
 
-
-
+function SIse=SIse(K,s,e,u,gpoint)
+r=0.5;
+SIse=r*qulvjinsi(K,s,e,u)/qulvjinsi(K,1,length(gpoint),u)+(1-r)*huchangjinsi(s,e,gpoint)/huchangjinsi(1,length(gpoint),gpoint);
+end
 
 % im=imread('d:\Users\J\图片\实验\xiaoniao1.png');
 % imshow(im);

@@ -1,10 +1,10 @@
 clear all;
 tic
-example=3;
+example=2;
 switch example
     case 1
         load bird200.mat
-        n=39;
+        n=84;
     case 2
         load fire500.mat
         n=42;
@@ -15,10 +15,11 @@ switch example
         load shizi1500.mat
         n=117;
     case 5
-        load fenghuang1700.mat
-        n=189;
+        load fenghuang2000.mat
+        n=626;
 end
-        x=huancanshuhua(gpoint);
+        gpoint(end+1,:)=gpoint(1,:);
+        x=canshuhua(gpoint);
         f=gpoint(:,2)';
         Num=length(gpoint);
         
@@ -252,15 +253,44 @@ load besttest.mat
 bestui=[zeros(1,p+1) pop(1).Position b*ones(1,p+1)];
 [~,~,bestP] = kongzhidingdian(M,length(pop(1).Position)+p,p,x,bestui,d);
 toc
+
+
 figure
-plot(gpoint(:,1),gpoint(:,2),"*")
+
+load(['tlist' num2str(plan) '.mat'])
+ut=x(tlist);
+for i=1:length(ut)
+    for j=1:neijiedianshuliang(end)+p+1
+        Njp_t(i, j) = Njp(j, p , ut(i), bestui);
+    end
+    tezhengc(i,:)=Njp_t(i,:)*bestP;
+%     tzwucha2(i)=norm(tezhengc(i,:)-gpoint(fenduandian(i),:));
+end
+tzwuchaB=vecnorm((tezhengc-gpoint(tlist,:)),2,2);
+tzwcname=['tzwuchaB',num2str(plan),'.mat'];
+save (tzwcname,'tzwuchaB') 
+% save tzwuchaB.mat tzwuchaB
+
+plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15)
 hold on
 DrawSplineB(neijiedianshuliang(end)+p,p,bestP,bestui,a,b);
+axis equal
+axis off
+% scatter(tezhengc(:,1),tezhengc(:,2),'g')
+figure
 scatter(bestui,ones(1,length(bestui)))
 figure
 plot(BestCost)
 xlabel('迭代次数');
 ylabel('适应度');
 title('适应度进化曲线')
+
+% figure
+% load tzwuchaV
+% plot([tzwuchaV tzwuchaB],'marker','*')
+% legend('V-系统(本文方法)','基于GA的B样条拟合')
+
+wucha=exp((BestCost(end)-log(Num)*(2*(length(bestui)-p-2)-p+1))/(Num))-1;
+
 figure
 plot(neijiedianshuliang)

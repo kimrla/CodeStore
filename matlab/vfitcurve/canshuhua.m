@@ -1,8 +1,10 @@
-function t = canshuhua(M,d)
+function t = canshuhua(d)
 %UNTITLED2 此处显示有关此函数的摘要
 %   此处显示详细说明
 t(1)=0;%开始参数化 ti i=1,2...,M+1
 ds=0;
+M=length(d);
+
 for j=1:M-1
     ds=ds+norm(d(j+1,:)-d(j,:))^0.5;
 end

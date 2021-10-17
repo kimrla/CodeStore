@@ -7,7 +7,8 @@ for i=1:M
         %误差εi=di-sti=di-ΣNjpti*Pj
         s(i,:)=N(i,:)*P;
         epsilon(i,:)=d(i,:)-s(i,:); 
-        e=e+norm(epsilon(i,:))^2;%整体误差
+%         e=e+norm(epsilon(i,:))^2;%整体误差
+        e=e+norm(epsilon(i,:));
 end  
 end
 
