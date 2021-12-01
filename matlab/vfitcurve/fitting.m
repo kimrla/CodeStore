@@ -1,5 +1,5 @@
 clear
-example=12;
+example=13;
 switch example
     case 1
         % 实验1
@@ -18,7 +18,7 @@ switch example
     case 12
         % 实验2 变体3
         x=0:0.002:1-0.002;
-        f=100./exp(abs(10*x-5))+(10*x-5).^5/100;
+        f=100./exp(abs(10*x-5))+(10*x-5).^5/30;
         %         M=length(x);%采样点个数
         %         N=128;%基函数个数
         xmax=1;
@@ -26,6 +26,13 @@ switch example
         % 实验2 变体2
         x=0:0.002:1-0.002;
         f=100./exp(abs(10*x-5));
+        xmax=1;
+        %         M=length(x);%采样点个数
+        %         N=128;%基函数个数
+    case 13
+        % 实验2 变体2
+        x=0:0.0002:1-0.0002;
+        f=100./exp(abs((10*x-2.5).*(10*x-7.5)));
         %         M=length(x);%采样点个数
         %         N=128;%基函数个数
         xmax=1;
@@ -94,10 +101,10 @@ f=f';
 P=[x',f];
 % % end
 k = 3;
-N = 4;
+N = 2;
 % A = LSMatrix_V(k,N,t);
 
-plan=2;
+plan=1;
 
 
 switch plan
@@ -114,18 +121,86 @@ switch plan
         % end
         % % axis equal
         % % axis on
-        A = LSMatrix_V(k,N,t);
+        num=length(P);
+        for i=1:num
+            [phiP(i),KP(i)]=qulv(P,i,num);
+        end
+        [qljdz,qljdd]=findpeaks(KP);
+        qljdt=t(qljdd);
         
-        X = A\t;
-        Y=A\f;
-        % V = LSMatrix_V(k,N,linspace(0,1,501)');
-        % F = V * X;
-        % figure,
-        % plot(t,f,'.r');hold on
-        % plot(linspace(0,1,501)',F,'b');
+        for n=1:(k+1)*2^(N-1)
+            A = LSMatrix_V(k,N,t);
+            %         n=1;
+            A=A(:,1:n);
+            Lambda=A\P;
+            X=Lambda(:,1);
+            Y=Lambda(:,2);
+            V = LSMatrix_V(k,N,linspace(0,1,1000)');
+            V=V(:,1:n);
+            C1=V*Lambda;
+            Pp=A*Lambda;
+            if n==1
+                C1(:,1)=linspace(0,1,1000)';
+                Pp(:,1)=x';
+            end
+            
+            wucha=vecnorm((Pp-P),2,2);
+            
+            tz=0.5;
+            for i=1:num
+                
+                [phiPp(i),KPp(i)]=qulv(Pp,i,num);
+            end
+            phiwc=phiPp./phiP;
+            Kwc=KPp./KP;
+            tzPhiwc(n)=phiwc(x==tz);
+            tzKwc(n)=Kwc(x==tz);
+            pj(n)=mean(wucha);
+            tzwucha(n)=wucha(x==tz);
+            % V = LSMatrix_V(k,N,linspace(0,1,501)');
+            % F = V * X;
+            % figure,
+            % plot(t,f,'.r');hold on
+            % plot(linspace(0,1,501)',F,'b');
+            %         figure,
+            subplot(2^(N-1),k+1,n),
+            plot(P(:,1),P(:,2),'.','Color',[255 102 102]/255,'MarkerSize',10);hold on
+            plot(C1(:,1),C1(:,2),'Color',[0 102 153]/255,'LineWidth',2)
+            title(['添加前' num2str(n) '个基函数拟合效果'])
+            
+            %         axis equal
+            %         axis off
+            xlim([0 1])
+            xlabel('x')
+            ylabel('f(x)')
+            box off
+        end
         
+        [rgx,rgy]=jianruijida(P,k,t);
+        %         legend('原始数据','拟合曲线')
+        for i=1:size(qljdt,1)
+            for h=1:size(rgx,1)
+                if qljdt(i,1)>=rgx(h,1) && qljdt(i,1)<=rgx(h,2)
+                    qljdt(i,2)=h;                    
+                end
+            end
+            for j=1:size(rgy,1)
+                if qljdt(i,1)>=rgy(j,1) && qljdt(i,1)<=rgy(j,2)
+                    qljdt(i,3)=j;
+                end
+            end
+        end
         
-        
+        pjbhl=[0,-diff(pj)];
+        figure
+        plot(pj,'Color',[0 102 153]/255,'LineWidth',2)
+        xlabel('V-系统基函数序号')
+        ylabel('平均误差变化')
+        figure
+        plot(tzPhiwc,'Color',[0 102 153]/255,'LineWidth',2)
+        xlabel('V-系统基函数序号')
+        ylabel('特征点处拟合曲线与原始数据夹角比值')
+        box off
     case 2
         % 约束方程
         %         [DR,DL] = VContinuityInfo1(N);
@@ -140,9 +215,9 @@ switch plan
         CList=zeros(2^(N-1)-1,3);
         CList(:,1)=1/(2^(N-1)):1/(2^(N-1)):(2^(N-1)-1)/(2^(N-1));
         CList(:,2)=CList(:,1);
-        CList(:,3)=-1;
-%         tz=0.5;
-%         CList(ismember(CList(:,1),tz),:)=[];
+        CList(:,3)=0;
+        %         tz=0.5;
+        %         CList(ismember(CList(:,1),tz),:)=[];
         %         %       CList(16,:)=[];
         %         p = sum(CList(:,3)+1);  % 约束方程数目
         %         SegNum = 2^(N-1); % 分段数
@@ -174,6 +249,7 @@ switch plan
         Lambda = LSCurFit_V(P,k,N,t,CList);
         X=Lambda(:,1);
         Y=Lambda(:,2);
+        
         %% Show2
         figure,
         plot(P(:,1),P(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15);hold on
@@ -335,35 +411,69 @@ end
 % bar(abs(Y))
 % 找到最大的lamda
 
-matrixLamda=ones(length(Y)/2,N);
-matrixLamda(:,1)=kron(Y(1:(k+1)),ones(length(Y)/((k+1)*2),1))/sum(abs(Y(1:(k+1))));
-for i=2:N
-    matrixLamda(:,i)=kron(Y(1+(k+1)*2^(i-2):(k+1)*2^(i-1)),ones(length(Y)/((k+1)*2^(i-1)),1))/sum(abs(Y(1+(k+1)*2^(i-2):(k+1)*2^(i-1))));
+if N>2
+    %     matrixLamda=ones(length(Y)/2,N);
+    %     absY=abs(Y);
+    %     matrixLamda(:,1)=kron(absY(1:(k+1)),ones(length(absY)/((k+1)*2),1))/max(absY(1:(k+1)));
+    %     for i=2:N
+    %         matrixLamda(:,i)=kron(absY(1+(k+1)*2^(i-2):(k+1)*2^(i-1)),ones(length(absY)/((k+1)*2^(i-1)),1))/max(absY(1+(k+1)*2^(i-2):(k+1)*2^(i-1)));
+    %     end
+    
+    %     matrixLamda=ones(length(Y)/2,N);
+    %     absY=abs(Y);
+    %     matrixLamda(:,1)=kron(absY(1:(k+1)),ones(length(absY)/((k+1)*2),1))/max(absY(1:(k+1)));
+    %     for i=2:N
+    %         matrixLamda(:,i)=kron(absY(1+(k+1)*2^(i-2):(k+1)*2^(i-1)),ones(length(absY)/((k+1)*2^(i-1)),1))/max(absY(1+(k+1)*2^(i-2):(k+1)*2^(i-1)));
+    %     end
+    matrixLamda=ones(length(Y)/2,N);
+    absY=abs(Y);
+    for i=2:N
+        for j=1:k+1
+            absY((k+1)*2^(i-2)+(j-1)*2^(i-2)+1:(k+1)*2^(i-2)+j*2^(i-2))=absY((k+1)*2^(i-2)+(j-1)*2^(i-2)+1:(k+1)*2^(i-2)+j*2^(i-2))/max(absY((k+1)*2^(i-2)+(j-1)*2^(i-2)+1:(k+1)*2^(i-2)+j*2^(i-2)));
+        end
+    end
+    matrixLamda(:,1)=kron(absY(1:(k+1)),ones(length(absY)/((k+1)*2),1))/max(absY(1:(k+1)));
+    for i=2:N
+        matrixLamda(:,i)=kron(absY(1+(k+1)*2^(i-2):(k+1)*2^(i-1)),ones(length(absY)/((k+1)*2^(i-1)),1));
+    end
+    %    0 figure
+    %     xlable=[2 N];
+    %     ylable=[0.5 4.5];
+    %     imagesc(xlable,ylable,matrixLamda(1:length(Y)/2,2:N))
+    %     colormap(flipud(bone));
+    %
+    %     colorbar
+    for i=1:k+1
+        figure
+        xlable=[0 1];
+        ylable=[2 N];
+        %     colormat
+        imagesc(xlable,ylable,matrixLamda(1+length(absY)/(2*(k+1))*(i-1):length(absY)/(2*(k+1))*i,2:N)')
+        colormap(flipud(bone));
+        %     yticks(2:N)
+        set(gca,'YDir','normal');
+        colorbar
+        caxis([0 1]);
+        xlabel('x')
+        ylabel('V-系统基函数中的第N组')
+        box off
+    end
 end
-matrixLamda=abs(matrixLamda);
-%     figure
-%     xlable=[2 N];
-%     ylable=[0.5 4.5];
-%     imagesc(xlable,ylable,matrixLamda(1:length(Y)/2,2:N))
-%     colormap(flipud(bone));
 %
-%     colorbar
-for i=1:k+1
-    figure
-    xlable=[0 1];
-    ylable=[2 N];
-    %     colormat
-    imagesc(xlable,ylable,matrixLamda(1+length(Y)/(2*(k+1))*(i-1):length(Y)/(2*(k+1))*i,2:N)')
-    colormap(flipud(bone));
-    %     yticks(2:N)
-    set(gca,'YDir','normal');
-    colorbar
-    xlabel('x')
-    ylabel('V-系统基函数中的第N组')
-    box off
+function [rgx,rgy]=jianruijida(gpoint,k,t)
+N=floor(log2(length(gpoint)/(k+1)))+1;
+A=LSMatrix_V(k,N,t);
+Lambda=A\gpoint;
+DC3=Lambda((k+3)*2^(N-2)+1:(k+4)*2^(N-2),:);
+[~,locationx] = findpeaks(abs(DC3(:,1)));
+[~,locationy] = findpeaks(abs(DC3(:,2)));
+xa=(locationx-1)/2^(N-2);
+xb=locationx/2^(N-2);
+ya=(locationy-1)/2^(N-2);
+yb=locationy/2^(N-2);
+rgx=[xa,xb];
+rgy=[ya,yb];
 end
-
-
 
 % InfoV1Bas = BaseGene_V1(N);   % 1次V系统基函数信息(非离散采样)
 % [VRInfo,NumSeg] = VReconstruction_Polyline([X Y],InfoV1Bas);
@@ -372,4 +482,17 @@ end
 % for j = 1 : NumSeg
 %     plot(VRInfo(j,5:6),VRInfo(j,7:8),'Color',[0 102 153]/255,'LineWidth',1.5);hold on
 % end
-
+function [phi,K]=qulv(gpoint,i,num)
+r=i+1;
+l=i-1;
+if i==1
+    l=num;
+elseif i==num
+    r=1;
+end
+v1=gpoint(i,:)-gpoint(l,:);
+v2=gpoint(r,:)-gpoint(i,:);
+v3=gpoint(r,:)-gpoint(l,:);
+phi=acos(dot(v1,v2)/(norm(v1)*norm(v2)));
+K=2*sin(phi)/norm(v3);
+end

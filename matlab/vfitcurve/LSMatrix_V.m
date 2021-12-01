@@ -12,7 +12,9 @@ M = length(T);
 NumV = (k+1)*2^(N-1);
 A = zeros(M,NumV);
 A(:,1:k+1) = LegendreValue(k,T);       % Legendre多项式
+if N>1
 A(:,k+2:2*(k+1)) = GenerateValue(k,T); % 生成元
+end
 for n = 3 : N 
     NumSeg = 2^(n-2);
     knots = linspace(0,1,NumSeg+1);

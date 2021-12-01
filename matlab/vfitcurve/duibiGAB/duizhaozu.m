@@ -1,7 +1,7 @@
 clear all;
 tic
-example=2;
-switch example
+plan=6;
+switch plan
     case 1
         load bird200.mat
         n=84;
@@ -17,6 +17,45 @@ switch example
     case 5
         load fenghuang2000.mat
         n=626;
+    case 6
+        load hudie3000.mat
+        n=810;
+    case 7
+        load niao21000.mat
+%         n=310;
+    case 8
+        load huacao4-1500.mat
+        n=676;
+    case 9
+        load G-200.mat
+        n=84;
+    case 11
+        load bird200r.mat
+        n=84;
+    case 12
+        load fire500r.mat
+        n=42;
+    case 13
+        load yezi600r.mat
+        n=51;
+    case 14
+        load shizi1500r.mat
+        n=117;
+    case 15
+        load fenghuang2000r.mat
+        n=626;
+    case 16
+        load hudie3000r.mat
+        n=810;
+    case 17
+        load niao21000r.mat
+        n=310;
+    case 18
+        load huacao4-1500r.mat
+        n=676;
+    case 19
+        load G-200r.mat
+        n=84;
 end
         gpoint(end+1,:)=gpoint(1,:);
         x=canshuhua(gpoint);
@@ -268,7 +307,7 @@ for i=1:length(ut)
 end
 tzwuchaB=vecnorm((tezhengc-gpoint(tlist,:)),2,2);
 tzwcname=['tzwuchaB',num2str(plan),'.mat'];
-save (tzwcname,'tzwuchaB') 
+
 % save tzwuchaB.mat tzwuchaB
 
 plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15)
@@ -291,6 +330,10 @@ title('适应度进化曲线')
 % legend('V-系统(本文方法)','基于GA的B样条拟合')
 
 wucha=exp((BestCost(end)-log(Num)*(2*(length(bestui)-p-2)-p+1))/(Num))-1;
-
+pjwc=wucha/length(gpoint);
+pathname='C:\CodeStore\matlab\vfitcurve\data\';
+save ([pathname,tzwcname],'tzwuchaB','pjwc') 
 figure
 plot(neijiedianshuliang)
+Bdataname=['Bplan',num2str(plan),datestr(datetime('now'),'-yyyy-mm-dd-HH-MM'),'.mat'];
+save ([pathname,Bdataname])
