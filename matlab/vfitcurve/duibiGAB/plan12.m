@@ -3,7 +3,7 @@ clear all;
 % core_number=2;            %想要调用的处理器个数
 % parpool('local',core_number);
 tic
-example=2;
+example=24;
 switch example
     case 1
         % 实验1
@@ -36,20 +36,31 @@ switch example
         load bird200.mat
         x=gpoint(:,1)';
         f=gpoint(:,2)';
+    case 24
+        load curve12.mat
+        gpoint=P;
+        n=11;
+        a=0;
+        b=1;
+%         gpoint(end+1,:)=gpoint(1,:);
+        d=gpoint;
+        x=canshuhua(gpoint);
+        f_=gpoint(:,2)';
+        M=length(gpoint)-1;
 end
 
-f_=f+normrnd(0,1,1,Num);
+% f_=f+normrnd(0,1,1,Num);
 
 % plot(x,f_,"*")
 % hold on
 % plot(x,f)
-d=[x;f_]';%给定数据点,di=(xi,yi) i=1~M+1
+% d=[x;f_]';%给定数据点,di=(xi,yi) i=1~M+1
 
-M=length(x)-1; %论文中是0~M，所以总数length=M+1
+% M=length(x)-1; %论文中是0~M，所以总数length=M+1
 
 p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
 
-plan=2;
+plan=1;
 switch plan
     case 1
         ui=jiedianxiangliang(n,p,a,b);%方案1 均匀节点向量

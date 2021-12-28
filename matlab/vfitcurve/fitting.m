@@ -1,5 +1,5 @@
 clear
-example=13;
+example=12;
 switch example
     case 1
         % 实验1
@@ -17,7 +17,7 @@ switch example
         xmax=1;
     case 12
         % 实验2 变体3
-        x=0:0.002:1-0.002;
+        x=0:0.02:1-0.02;
         f=100./exp(abs(10*x-5))+(10*x-5).^5/30;
         %         M=length(x);%采样点个数
         %         N=128;%基函数个数
@@ -163,44 +163,68 @@ switch plan
             % plot(t,f,'.r');hold on
             % plot(linspace(0,1,501)',F,'b');
             %         figure,
-            subplot(2^(N-1),k+1,n),
-            plot(P(:,1),P(:,2),'.','Color',[255 102 102]/255,'MarkerSize',10);hold on
-            plot(C1(:,1),C1(:,2),'Color',[0 102 153]/255,'LineWidth',2)
-            title(['添加前' num2str(n) '个基函数拟合效果'])
+            figure
+%             subplot(2^(N-1)*2,(k+1)/2,n),
+            plot(P(:,1),P(:,2),'.','Color','r','MarkerSize',10);hold on
+            plot(C1(:,1),C1(:,2),'Color',[0 102 153]/255,'LineWidth',1.5)
+             set(gca, 'linewidth', 1.3, 'fontsize', 15, 'fontname', '微软雅黑')
+%             title(['添加前' num2str(n) '个基函数拟合效果'])
             
             %         axis equal
             %         axis off
             xlim([0 1])
-            xlabel('x')
-            ylabel('f(x)')
+            ylim([-110 100])
+%             xlabel('x')
+%             ylabel('f(x)')
             box off
+%             legend({'原始数据','拟合曲线','基函数'},'location','southeast','fontsize', 15, 'fontname', '微软雅黑')
+            axes('position',[0.6 0.2 0.3 0.3])
+            plot(linspace(0,1,1000)',V(:,n),'k','LineWidth',3)
+            
+            set(gca, 'linewidth', 1.3, 'fontsize', 15, 'fontname', '微软雅黑')
+            fig1name=['curve12Vhb',num2str(n)];
+            savefig(fig1name)
+            saveas(gcf,fig1name,'png')
+            saveas(gcf,fig1name,'emf')
+%             figure
+%             plot(linspace(0,1,1000)',V(:,n),'k','LineWidth',1.2)
+%             set(gca, 'linewidth', 1.3, 'fontsize', 15, 'fontname', '微软雅黑')
+%             fig2name=['curve12V',num2str(n),'b'];
+%             savefig(fig2name)
+%             saveas(gcf,fig2name,'png')
+%             saveas(gcf,fig2name,'emf')
+%             figure
+%             base=zeros((k+1)*2^(N-1),1);
+%             base(n)=1;
+%              VCompose(base,k,N)
         end
         
-        [rgx,rgy]=jianruijida(P,k,t);
-        %         legend('原始数据','拟合曲线')
-        for i=1:size(qljdt,1)
-            for h=1:size(rgx,1)
-                if qljdt(i,1)>=rgx(h,1) && qljdt(i,1)<=rgx(h,2)
-                    qljdt(i,2)=h;                    
-                end
-            end
-            for j=1:size(rgy,1)
-                if qljdt(i,1)>=rgy(j,1) && qljdt(i,1)<=rgy(j,2)
-                    qljdt(i,3)=j;
-                end
-            end
-        end
-        
-        pjbhl=[0,-diff(pj)];
-        figure
-        plot(pj,'Color',[0 102 153]/255,'LineWidth',2)
-        xlabel('V-系统基函数序号')
-        ylabel('平均误差变化')
-        figure
-        plot(tzPhiwc,'Color',[0 102 153]/255,'LineWidth',2)
-        xlabel('V-系统基函数序号')
-        ylabel('特征点处拟合曲线与原始数据夹角比值')
-        box off
+%         [rgx,rgy]=jianruijida(P,k,t);
+%         %         legend('原始数据','拟合曲线')
+%         for i=1:size(qljdt,1)
+%             for h=1:size(rgx,1)
+%                 if qljdt(i,1)>=rgx(h,1) && qljdt(i,1)<=rgx(h,2)
+%                     qljdt(i,2)=h;                    
+%                 end
+%             end
+%             for j=1:size(rgy,1)
+%                 if qljdt(i,1)>=rgy(j,1) && qljdt(i,1)<=rgy(j,2)
+%                     qljdt(i,3)=j;
+%                 end
+%             end
+%         end
+%         
+%         pjbhl=[0,-diff(pj)];
+%         figure
+%         plot([pj' tzwucha'],'LineWidth',2)
+%         xlabel('V-系统基函数个数')
+%         ylabel('误差')
+%         legend('平均误差','特征点误差')
+%         figure
+%         plot(tzPhiwc,'Color',[0 102 153]/255,'LineWidth',2)
+%         xlabel('V-系统基函数序号')
+%         ylabel('特征点处拟合曲线与原始数据夹角比值')
+%         box off
     case 2
         % 约束方程
         %         [DR,DL] = VContinuityInfo1(N);

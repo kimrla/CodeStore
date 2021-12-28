@@ -1,6 +1,6 @@
-clear all;
+clear
 tic
-plan=6;
+plan=22;
 switch plan
     case 1
         load bird200.mat
@@ -22,7 +22,7 @@ switch plan
         n=810;
     case 7
         load niao21000.mat
-%         n=310;
+        %         n=310;
     case 8
         load huacao4-1500.mat
         n=676;
@@ -56,20 +56,36 @@ switch plan
     case 19
         load G-200r.mat
         n=84;
+    case 21
+        load hudie2fjy420.mat
+        n=175;
+        gpoint=P;
+    case 22
+        load star3fjy360.mat
+        n=99;
+        gpoint=P;
+    case 23
+        load star3fjy72.mat
+        gpoint=P;
+        n=95;
+    case 24
+        load curve12.mat
+        gpoint=P;
+        n=8;
 end
-        gpoint(end+1,:)=gpoint(1,:);
-        x=canshuhua(gpoint);
-        f=gpoint(:,2)';
-        Num=length(gpoint);
-        
-        a=0;
-        b=1;
+gpoint(end+1,:)=gpoint(1,:);
+x=canshuhua(gpoint);
+f=gpoint(:,2)';
+Num=length(gpoint);
+
+a=0;
+b=1;
 
 
 d=gpoint;
 M=length(gpoint)-1;
 p=3;
-NP=50;
+NP=20;
 GM=200;
 TournamentSize=3;
 maxtime=1;
@@ -270,6 +286,8 @@ for t=1:maxtime
         %             neijiedianshuliang(gen)=length(pop{1});
         %             bestP{gen}=P{1};
         %             bestui{gen}=ui{1};
+        %         if mod(gen,10)==0
+        
     end
     if t==1
         zuishaoneijiedian=neijiedianshuliang(end);
@@ -290,31 +308,28 @@ for t=1:maxtime
 end
 load besttest.mat
 bestui=[zeros(1,p+1) pop(1).Position b*ones(1,p+1)];
-[~,~,bestP] = kongzhidingdian(M,length(pop(1).Position)+p,p,x,bestui,d);
+[bestN,~,bestP] = kongzhidingdian(M,length(pop(1).Position)+p,p,x,bestui,d);
 toc
+Pp=bestN*bestP;
+[wuchaB,pjwuchaB]=distanceerror(gpoint,Pp);
+% wucha=vecnorm((bestN*bestP-gpoint),2,2);
 
 
+
+
+%%
 figure
-
-load(['tlist' num2str(plan) '.mat'])
-ut=x(tlist);
-for i=1:length(ut)
-    for j=1:neijiedianshuliang(end)+p+1
-        Njp_t(i, j) = Njp(j, p , ut(i), bestui);
-    end
-    tezhengc(i,:)=Njp_t(i,:)*bestP;
-%     tzwucha2(i)=norm(tezhengc(i,:)-gpoint(fenduandian(i),:));
+if plan<20
+load(['point',num2str(plan),'-200','.mat'])
 end
-tzwuchaB=vecnorm((tezhengc-gpoint(tlist,:)),2,2);
-tzwcname=['tzwuchaB',num2str(plan),'.mat'];
-
-% save tzwuchaB.mat tzwuchaB
-
-plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15)
+plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10)
 hold on
 DrawSplineB(neijiedianshuliang(end)+p,p,bestP,bestui,a,b);
 axis equal
 axis off
+legend({'原始数据','拟合曲线'},'location','northwest','fontsize', 15, 'fontname', '微软雅黑')
+
+%%
 % scatter(tezhengc(:,1),tezhengc(:,2),'g')
 figure
 scatter(bestui,ones(1,length(bestui)))
@@ -323,17 +338,29 @@ plot(BestCost)
 xlabel('迭代次数');
 ylabel('适应度');
 title('适应度进化曲线')
-
-% figure
-% load tzwuchaV
-% plot([tzwuchaV tzwuchaB],'marker','*')
-% legend('V-系统(本文方法)','基于GA的B样条拟合')
-
-wucha=exp((BestCost(end)-log(Num)*(2*(length(bestui)-p-2)-p+1))/(Num))-1;
-pjwc=wucha/length(gpoint);
+%
+% % figure
+% % load tzwuchaV
+% % plot([tzwuchaV tzwuchaB],'marker','*')
+% % legend('V-系统(本文方法)','基于GA的B样条拟合')
+load(['tlist' num2str(plan) '.mat'])
+% ut=x(tlist);
+% for i=1:length(ut)
+%     for j=1:neijiedianshuliang(end)+p+1
+%         Njp_t(i, j) = Njp(j, p , ut(i), bestui);
+%     end
+%     tezhengc(i,:)=Njp_t(i,:)*bestP;
+% %     tzwucha2(i)=norm(tezhengc(i,:)-gpoint(fenduandian(i),:));
+% end
+% tzwuchaB=vecnorm((tezhengc-gpoint(tlist,:)),2,2);
+tzwuchaB=wuchaB(tlist);
+tzwcname=['tzwuchaB',num2str(plan),'.mat'];
+% wucha=exp((BestCost(end)-log(Num)*(2*(length(bestui)-p-2)-p+1))/(Num))-1;
+% pjwucha=mean(wucha);
 pathname='C:\CodeStore\matlab\vfitcurve\data\';
-save ([pathname,tzwcname],'tzwuchaB','pjwc') 
-figure
-plot(neijiedianshuliang)
+save ([pathname,tzwcname],'tzwuchaB','pjwuchaB','wuchaB')
+% % save tzwuchaB.mat tzwuchaB
+% figure
+% plot(neijiedianshuliang)
 Bdataname=['Bplan',num2str(plan),datestr(datetime('now'),'-yyyy-mm-dd-HH-MM'),'.mat'];
 save ([pathname,Bdataname])

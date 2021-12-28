@@ -1,15 +1,15 @@
 clear
-plan=19;
+plan=2;
 switch plan
     case 1
         load bird200.mat
         fenbianlv=3;
     case 2
         load fire500.mat
-        fenbianlv=2;
+        fenbianlv=0.35;
     case 3
         load yezi600.mat
-        fenbianlv=1;
+        fenbianlv=0.3;
     case 4
         load shizi1500.mat
         fenbianlv=0.1;
@@ -24,10 +24,10 @@ switch plan
         fenbianlv=0.5;
     case 8
         load huacao4-1500.mat
-        fenbianlv=0.05;
+        fenbianlv=0.04;
     case 9
         load G-200.mat
-        fenbianlv=1;
+        fenbianlv=0.25;
     case 11
         load bird200r.mat
         fenbianlv=3;
@@ -46,7 +46,7 @@ switch plan
     case 16
         load hudie3000r.mat
         fenbianlv=0.2;
-     case 17
+    case 17
         load niao21000r.mat
         fenbianlv=0.5;
     case 18
@@ -55,15 +55,30 @@ switch plan
     case 19
         load G-200r.mat
         fenbianlv=1;
+    case 21
+        load hudie2fjy420.mat
+        fenbianlv=0.5;
+        gpoint=P;
+    case 22
+        load star3fjy360.mat
+        gpoint=P;
+        fenbianlv=0.032;
+    case 23
+        load star3fjy72.mat
+        gpoint=P;
+        fenbianlv=0.0001;
 end
 load(['tlist' num2str(plan) '.mat'])
 
 [ps,ix] = dpsimplify(gpoint,fenbianlv);   %%0.0001
-plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15)
+plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10)
 hold on
-plot(ps(:,1),ps(:,2),'.','Color',[224 222 58]/255,'MarkerSize',15)
+% plot(ps(:,1),ps(:,2),'.','Color',[224 222 58]/255,'MarkerSize',15)
 
 Pp=[ps;gpoint(1,:)];
+% P=[gpoint;gpoint(1,:)];
+% Pp=P(tlist,:);
+
 % Pp=ps;
 k = 3;
 n = k + 1;
@@ -73,7 +88,8 @@ NumItr =3;
 U = linspace(0,1,10*length(gpoint));                  % B样条曲线采样点对应参数值
 C1 = bspline_deboor(n,T,[real(PP_all(:,NumItr+1)),imag(PP_all(:,NumItr+1))],U);% 迭代NumItr步后曲线
 
-plot(C1(:,1),C1(:,2),'Color',[0 102 153]/255,'LineWidth',1.5)
+plot(C1(:,1),C1(:,2),'Color',[0 102 153]/255,'LineWidth',1.1)
+legend({'原始数据','拟合曲线'},'location','best','fontsize', 15, 'fontname', '微软雅黑')
 Chord = vecnorm(diff([gpoint;gpoint(1,:)],1,1),2,2);
 normt = [0;cumsum(Chord)/sum(Chord)];
 Cd = bspline_deboor(n,T,[real(PP_all(:,NumItr+1)),imag(PP_all(:,NumItr+1))],normt);

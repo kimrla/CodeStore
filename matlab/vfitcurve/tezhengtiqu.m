@@ -1,5 +1,5 @@
 clear
-plan=1;
+plan=21;
 switch plan
     case 1
         load bird200.mat
@@ -34,13 +34,14 @@ switch plan
         rd=0.2;
     case 8
         load huacao4-1500.mat
+        
 %         N=10;
         N=3;
         rd=0.1;
     case 9
         load G-200.mat
 %         N=6;
-        N=6;
+        N=7;
         rd=1;
         
     case 11
@@ -75,8 +76,21 @@ switch plan
         load G-200r.mat
 %         N=6;
         N=6;
+    case 21
+        load hudie2fjy420.mat
+        N=4;
+        gpoint=P;
+    case 22
+        load star3fjy360.mat
+        N=4;
+        gpoint=P;
+    case 23
+        load star3fjy72.mat
+        N=4;
+        gpoint=P;
 end
 % gpoint=gpoint+rd*rand(size(gpoint));
+% load(['point',num2str(plan),'-200','.mat'])
 gpoint(end+1,:)=gpoint(1,:);
 
 t=canshuhua(gpoint);
@@ -104,7 +118,7 @@ k=3;
 
 tezhengt=t(q==1);
 
-leastduanshu=ceil(log2(length(tezhengt)));
+leastduanshu=ceil(log2(length(tezhengt)));%2^leastduanshu>=特征点个数
 if leastduanshu<N-1
     leastduanshu=N-1;
 end
@@ -125,6 +139,8 @@ leastn=leastduanshu+1;
 if leastn>N
     N=leastn;
 end
+
+
 
 % newtezhengt=0:floor((2^(leastduanshu))/(length(tezhengt)-1))/(2^(leastduanshu)):(length(tezhengt)-1)*floor((2^(leastduanshu))/(length(tezhengt)-1))/(2^(leastduanshu));
 
@@ -156,27 +172,27 @@ find(CList(:,3)==0)
 CList(end+1,:)=[0,1,0];
 Lambda = LSCurFit_V(gpoint,k,N,newt,CList);
 Lambda(all(abs(Lambda)<=10^(-3),2),:)=0;
-[fitc,cost]=wucha(k,N,newt,Lambda,gpoint);
-meanwc=cost(end)/length(gpoint);
+nc=LSMatrix_V(k,N,newt)*Lambda;
+% wucha=vecnorm((nc-gpoint),2,2);
+% pjwucha=mean(wucha);
+[wuchaV,pjwuchaV]=distanceerror(gpoint,nc);
+
 
 pathname='C:\CodeStore\matlab\vfitcurve\data\';
 
 tlistname=['tlist',num2str(plan),'.mat'];
 save ([pathname,tlistname],'tlist','plan')
-
-tezhengc=LSMatrix_V(k,N,newtezhengt')*Lambda;
-
-tzwuchaV=vecnorm((tezhengc-gpoint(tlist,:)),2,2);
+tzwuchaV=wuchaV(tlist);
 tzwcname=['tzwuchaV',num2str(plan),'.mat'];
-save ([pathname,tzwcname],'tzwuchaV','meanwc') 
+save ([pathname,tzwcname],'tzwuchaV','pjwuchaV','wuchaV') 
 
-wcrate=diff(cost(tlist))./diff(tlist);
 
-[~,jc]=max(wcrate);
-u=tlist(jc)+1:tlist(jc+1)-1;
 
 figure,
-plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15);hold on
+if plan<20
+load(['point',num2str(plan),'-200','.mat'])
+end
+plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10);hold on
 % plot(gpoint(tlist(21:end),1),gpoint(tlist(21:end),2),'.','Color',[224 222 58]/255,'MarkerSize',15);hold on
 
 % gpoint(end,:)=NaN;
@@ -186,15 +202,15 @@ plot(gpoint(:,1),gpoint(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15);hold
 % fenduan=1/(2^(N-2)):1/(2^(N-2)):(2^(N-2)-1)/(2^(N-2));
 % A=LSMatrix_V(k,N,fenduan');
 % jiedian=A*Lambda;
-T=LSMatrix_V(k,N,newtezhengt')*Lambda;
+% T=LSMatrix_V(k,N,newtezhengt')*Lambda;
 
 % scatter(jiedian(:,1),jiedian(:,2),'b')
 % hold on
-plot(T(:,1),T(:,2),'gs','color',[0 102 153]/255,'MarkerSize',10)
+% plot(T(:,1),T(:,2),'gs','color',[0 102 153]/255,'MarkerSize',10)
 VCompose(Lambda,k,N)
 % legend('原始数据点','特征点','拟合曲线')
-legend('原始数据点','拟合曲线')
-set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
+legend({'原始数据','拟合曲线'},'location','northwest','fontsize', 15, 'fontname', '微软雅黑')
+% set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
 axis equal
 axis off
 % plot(gpoint(u,1),gpoint(u,2),'.','Color',[255 0 102]/255,'MarkerSize',15);
@@ -263,11 +279,6 @@ for i=1:length(x)
     temp(i)=x(i)*2^(-i);
 end
 y=sum(temp);
-end
-
-function [c,y]=wucha(k,N,t,lambda,P)
-c=LSMatrix_V(k,N,t)*lambda;
-y=cumsum(vecnorm((c-P),2,2));
 end
 
 function Kse=qulvjinsi(K,s,e,u)

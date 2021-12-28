@@ -25,13 +25,13 @@ Pp=interp1(t,P,tt,'linear');
  
  %% KKT
  B=eye(NumBas);
-%  M = [2*B,C';
-%       C,zeros(NumCns)];               % KKT方程系数矩阵
-%  b = [2*Lambda;zeros(NumCns,NumDim)] ;  % 
- M=[B;C];
- b=[Lambda;zeros(NumCns,NumDim)];
- %  Lambda0 = M \ b;
- Lambda0 = pinv(M)*b;
+ M = [2*B,C';
+      C,zeros(NumCns)];               % KKT方程系数矩阵
+ b = [2*Lambda;zeros(NumCns,NumDim)] ;  % 
+%  M=[B;C];
+%  b=[Lambda;zeros(NumCns,NumDim)];
+  Lambda0 = M \ b;
+%  Lambda0 = pinv(M)*b;
  Lambda = Lambda0(1:NumBas,:);
 end
 

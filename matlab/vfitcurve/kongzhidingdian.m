@@ -4,6 +4,7 @@ function [N,R,P] = kongzhidingdian(M,n,p,t,ui,d)
 R=zeros(1,2);
 for i=1:M+1   
     for j = 1 : n+1
+%         j = 1 : n+1;
         N(i, j) = Njp(j, p , t(i), ui);%Nij´æ´¢Njp(ti) i=1~M+1,j=0~n
     end
     R(i,:)=d(i,:)-Njp(1,p,t(i),ui)*d(1,:)-Njp(n+1,p,t(i),ui)*d(M,:);% R(i)=d(i)-N0pti*d(1)-Nnpti*d(M);

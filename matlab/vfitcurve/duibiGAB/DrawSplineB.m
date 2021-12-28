@@ -27,4 +27,4 @@ for u = a : 0.0001 : b-0.0001
 %         tempy = p_u(1,2);
 %     end
 end
-plot(p_u(:,1),p_u(:,2),'Color',[0 102 153]/255,'LineWidth',1.5)
+plot(p_u(:,1),p_u(:,2),'Color',[0 102 153]/255,'LineWidth',1.1)

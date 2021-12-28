@@ -358,6 +358,21 @@ switch plan
         P{end+1}=[206,67;199,47;174,25;151,25];
         P{end+1}=[151,25;120,25;107,52;106,92];
         P{end+1}=[106,92;106,132;120,169;172,152];
+    case 10
+        P{1}=[25,119;23,105;27,95;37,91];
+        P{end+1}=[37,91;52,85;65,92;70,106];
+        P{end+1}=[70,106;76,121;66,141;50,144];
+        P{end+1}=[50,144;34,146;31,146;21,141];
+        P{end+1}=[21,141;10,137;5,130;3,125];
+        P{end+1}=[3,125;0,120;0,108;1,100];
+        P{end+1}=[1,100;3,93;16,79;28,68];
+        P{end+1}=[28,68;41,57;53,33;51,21];
+        P{end+1}=[51,21;50,9;44,3;37,1];
+        P{end+1}=[37,1;30,-1;17,13;19,39];
+        P{end+1}=[19,39;21,65;46,105;48,127];
+        P{end+1}=[48,127;50,150;52,160;44,169];
+        P{end+1}=[44,169;37,179;21,168;21,161];
+        P{end+1}=[21,161;21,156;22,153;23,152];
 end
 
 
@@ -426,8 +441,10 @@ end
 gpoint=cell2mat(gpcp);
 fenduandian=cumsum(ncp);
 fenduandian=1+[0 fenduandian(1:end-1)]';
-gpointname=['G-',num2str(num),'.mat'];
-save (gpointname,'gpoint','num','fenduandian')
+pathname='C:\CodeStore\matlab\vfitcurve\data\';
+num=length(gpoint);
+gpointname=['point',num2str(plan),'-',num2str(num),'.mat'];
+save ([pathname,gpointname],'gpoint','num','fenduandian')
 % %
 % for i=1:length(gpoint)
 %     pause(0.01)

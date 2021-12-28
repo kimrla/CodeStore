@@ -25,10 +25,13 @@ function Lambda = LSCurFit_V(P,k,N,t,CList)
  end
  
  %% KKT
- M = [2*A'*A,C';
-      C,zeros(NumCns)];               % KKT方程系数矩阵
- b = [2*A'*P;zeros(NumCns,NumDim)] ;  % 
- Lambda0 = M \ b;
+%  M = [2*A'*A,C';
+%       C,zeros(NumCns)];               % KKT方程系数矩阵
+%  b = [2*A'*P;zeros(NumCns,NumDim)] ;  % 
+ M=[A;C];
+ b=[P;zeros(NumCns,NumDim)];
+%  Lambda0 = M \ b;
+ Lambda0 = pinv(M)* b;
  Lambda = Lambda0(1:NumBas,:);
  
 end

@@ -1,5 +1,5 @@
 clear
-plan=9;
+plan=22;
 switch plan
 %     case 1
 %         load bird200.mat
@@ -37,6 +37,12 @@ switch plan
         load huacao4-1500r.mat
     case 9
         load G-200r.mat
+    case 21
+        load hudie2fjy420.mat
+        gpoint=P;
+    case 22
+        load star3fjy360.mat
+        gpoint=P;
 end
 figure
 load(['tlist' num2str(plan) '.mat'])
@@ -52,6 +58,21 @@ p(2).Marker='+';
 p(3).Marker='*';
 p(4).Marker='s';
 p(5).Marker='.';
+% p(1).Color=[1 0.6 0.8];
+% p(2).Color=[0.6 0.8 1];
+% p(3).Color=[0.6 1 0.8];
+% p(4).Color=[0.8 1 0.6];
+% p(5).Color=[1 0.8 0.6];
+p(1).Color=[0.96, 0.62, 0.24];
+p(2).Color=[0.99, 0.57, 0.59];
+p(3).Color=[0.10, 0.67, 0.59];
+p(4).Color=[0.68, 0.42, 0.89];
+p(5).Color=[0.28, 0.55, 0.86];
+% p(1).Color='#994A43';
+% p(2).Color='#D9E693';
+% p(3).Color='#E6857D';
+% p(4).Color='#65A1E6';
+% p(5).Color='#4B6F99';
 legend('V-系统(本文方法)','基于GA的B样条拟合','PIA','Fourier变换','DB4小波变换')
 % legend('V-系统(本文方法)','PIA','Fourier变换','DB4小波变换')
 xticks(1:1:length(tlist));

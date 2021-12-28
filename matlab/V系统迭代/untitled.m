@@ -4,10 +4,22 @@ dataCell = textscan(fid,'%f %f','headerlines',1);
 
 P = cell2mat(dataCell);
 % P=P+1;
-P=100*P;
+pointnum=250;
+csl = [0;cumsum(vecnorm(diff(P),2,2))]; %累加长度
+L=csl(end);
+
+t=csl/L;
+tt=linspace(0,1,pointnum)';
+
+Pp=interp1(t,P,tt,'linear');
+clear P
+P=Pp;
+clear Pp
+scatter(P(:,1),P(:,2));
+axis equal
 t=canshuhua(P);
 k=3;
-N=3;
+N=2;
 % delta=0.0001;
 CList=zeros(2^(N-1)-1,3);
 CList(:,1)=1/(2^(N-1)):1/(2^(N-1)):(2^(N-1)-1)/(2^(N-1));
@@ -18,17 +30,17 @@ Lambdatrapz=LSCurFit_Vtrapz(P,k,N,t,CList);
 % Lambda=LSMatrix_V(k,N,t)\P;
 Pp=LSMatrix_V(k,N,t)*Lambda;
 % wucha=vecnorm((P-Pp),2,2);
-% Lambdaupdate=zeros((k+1)*2^(N-2),1);
-N=N+1;
-NumSeg = 2^(N-2);
-for j=1:NumSeg
-    [CList1,Lambdaupdate(j:NumSeg:size(Lambda),:)]=VPIA(j,k,N,t,P-Pp,CList);    
-end
-Lambda=[Lambda;Lambdaupdate];
-Aupdate=LSMatrix_V(k,N,t);
-Aupdate=Aupdate(:,size(Aupdate,2)/2+1:end);
+% % Lambdaupdate=zeros((k+1)*2^(N-2),1);
+% N=N+1;
+% NumSeg = 2^(N-2);
+% for j=1:NumSeg
+%     [CList1,Lambdaupdate(j:NumSeg:size(Lambda),:)]=VPIA(j,k,N,t,P-Pp,CList);    
+% end
+% Lambda=[Lambda;Lambdaupdate];
+% Aupdate=LSMatrix_V(k,N,t);
+% Aupdate=Aupdate(:,size(Aupdate,2)/2+1:end);
 
-PpP=Aupdate*Lambdaupdate;
+% PpP=Aupdate*Lambdaupdate;
 
 figure,
 plot(P(:,1),P(:,2),'.','Color',[255 102 102]/255,'MarkerSize',15);hold on
