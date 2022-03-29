@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8>
+
+<title>The MIT-BIH ECG Compression Test Database</title>
+<link rel="stylesheet" href="/physionet-pds/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="https://physionet.org/pn/css/physionet.css" media="all"> <!--   -->
+<link rel="stylesheet" href="https://physionet.org/pn/print.css" type="text/css" media="print"><!--   -->
+<link rel="stylesheet" href="/physionet-pds/css/shop-item.css" type="text/css" media="print"><style type="text/css">
+#toc, #doi { margin-right: 1em; }#toc, #doi { background: #ecf3ff; border: solid 2px #222 }
+.sf-menu > li > a { background: #dfe9ff; }
+h1, h2, h3 { color: #222; background: #dfe9ff }</style>
+<!-- scripts from Rich Callogero, May 2016 -->
+
+
+<script src="/physionet-pds/js/jquery.js"></script>
+<script src="/physionet-pds/js/bootstrap.min.js"></script>
+<script src="/physionet-pds/js/list.js"></script>
+
+<!--<script src="https://physionet.org/pn/js/jquery-1.11.3.min.js"></script>-->
+<script src="https://physionet.org/pn/js/hoverIntent.js"></script>
+<script src="https://physionet.org/pn/js/superfish.min.js"></script>
+<!--<script src="https://physionet.org/pn/js/debug.js"></script>-->
+<script src="https://physionet.org/pn/js/accessible-superfish.js"></script>
+<script src="https://physionet.org/pn/js/physionet.js"></script>
+<!-- -->
+<!--<script type="text/javascript" src="https://physionet.org/pn/js/jquery.tableofcontents.min.js"></script>-->
+<script type="text/javascript">
+  var loc = window.location.pathname;
+  var dir = loc.substring(0, loc.lastIndexOf('/'));
+  dir = dir + '/';
+  dir = dir.slice(15, dir.length);
+  var S3BL_IGNORE_PATH = true;
+  var BUCKET_URL = 'https://physionet-pds.s3.amazonaws.com';
+  //var BUCKET_URL = 'https://s3.amazonaws.com/';
+  var S3B_ROOT_DIR = dir; //'PhysioBank/apnea-ecg/';
+  $(function(){
+    //$("#NavBar").load("/physionet-pds/PhysioBank/NavBar.html");
+    $("#Footer").load("/physionet-pds/PhysioBank/Footer.html");
+  });
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('ul.sf-menu').superfish({ autoArrows: false });
+    if ($('h2').length) {
+      $('#tocwrapper').append('<ul id="toc"></ul>');
+      $('#toc').tableOfContents(null, { startLevel: 2 });
+    }});
+</script>
+<!--#if expr="$MATHCONFIG"-->
+<!-- <script type="text/javascript" src="/pn4/js/mathjax/MathJax.js?config=< ! - -#echo var="MATHCONFIG" - - >"></script>-->
+<!--#endif-->
+</head>
+
+<body>
+
+  <header class="banner">
+    <a class="hide" href="#content">Skip to content</a>
+    <div style="width: 100%; position: absolute; top: 0;  z-index: 1; background-color: #222; min-width: 700px; padding: 0;">
+      <div class="topmenu" style="float: left; padding: 0.5em 2em 0.5em 0.5em;">
+	<!--	  <ul class="sf-menu sf-shadow sf-arrows"  >--><!--< ! - - #include virtual="https://physionet.org/pn/menu.shtml" -  - > -->
+	<!--	  </ul>-->
+      </div> <div style="float: left; padding: 0.6em 0 0 10em; margin: 0;">
+  <a style="color:#9d9d9d;background: none !important;" href="/physionet-pds/index.html"><span class="glyphicon glyphicon-home"> Home</span></a>
+    </div>
+    <div style="float: right; padding: 0.6em 10em 0 0; margin: 0;">
+    <a style="color:#9d9d9d;background: none !important;" href="https://Physionet.org"><span class="glyphicon glyphicon-transfer"> Our Website</span></a>
+    </div>
+
+
+    <div class="pbanner"><!-- pbanner is set to display: none -->
+      from <b>PhysioNet</b>, the research resource for complex physiologic signals
+    </div>
+    <div  style="width: 100%; min-width: 700px; margin:  0 0 2.7em 0; background-color: transparent; padding: 0;">
+      <!-- provides space above h1 header, so it isn't hidden by banner -->
+      <div id="top"><!-- need nested div to link to top lands in right place --></div>      
+    </div>
+
+  </header>
+
+    <main><h1 style="margin-top: 1.75em; padding-top: .4em;">The MIT-BIH ECG Compression Test Database</h1><nav id="tocwrapper" style="padding: 1.5em 0 0 0; float: right;"> <!-- id to position toc added by KP, 6 July 2015 -->
+        </nav>
+    <!--#include virtual="https://physionet.org/cgi-bin/doicheck?uri=${REQUEST_URI}&title=$TITLE"-->
+    <a id="content" ></a>
+    <article id="page"><!-- added by KP, 12 June 2015 -->
+
+<div class="alert alert-warning" role="alert">
+<p>
+This database is described in</p>
+<div class="reference">
+Moody GB, Mark RG, Goldberger AL.
+<a href="http://ecg.mit.edu/george/publications/trim-cinc-1988.pdf"
+target="other">Evaluation of the "TRIM" ECG data compressor.</a>
+<i>Computers in Cardiology</i>. <b>15</b>:167-170 (1988).
+</div> <!-- end reference -->
+<p>
+<b>Please cite this publication when referencing this material, and also
+include the standard citation for PhysioNet:</b></p>
+<div class="reference">
+Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh, Mark RG,
+Mietus JE, Moody GB, Peng C-K, Stanley HE.  PhysioBank, PhysioToolkit, and
+PhysioNet: Components of a New Research Resource for Complex Physiologic
+Signals.
+<i>Circulation</i> <b>101</b>(23):e215-e220 [Circulation Electronic Pages;
+<a href="http://circ.ahajournals.org/content/101/23/e215.full"
+target="other">http://circ.ahajournals.org/content/101/23/e215.full</a>];
+2000 (June 13).
+</div> <!-- end reference -->
+</div>
+
+<p style="text-align: center;"><img src="/physionet-pds/Media/cdb.png">
+</p>
+
+<p>
+This database contains 168 short ECG recordings (20.48 seconds each) selected
+to pose a variety of challenges for ECG compressors, in particular for lossy
+compression methods.</p>
+<div class="row">
+                <div class="col-md-12">
+                  <div id="listing"></div>
+                </div>
+              </div>
+              <div id="Footer"></div><!-- Footer -->

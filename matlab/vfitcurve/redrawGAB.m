@@ -1,4 +1,4 @@
-
+% 重新画遗传算法B样条的拟合结果示意图
 for gen=1:GM
     if gen<=length(tempui)        
         figure

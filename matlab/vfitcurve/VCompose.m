@@ -20,7 +20,7 @@ A = LSMatrix_V(k,N,T);           % V-系统基函数在采样节点向量上的取值(基对于列)
 Vdiscrete = A * Lambda;     
 
 %% 逐段插值为k次多项式
-NumSmpOnSeg = 17;                                 % 每段采样点数（默认）
+NumSmpOnSeg = 101;                                 % 每段采样点数（默认）
 LengthSubinterval = 1/NumSeg;
 t0 = linspace(0,LengthSubinterval,NumSmpOnSeg);   % 第1段采样节点
 

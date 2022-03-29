@@ -1,5 +1,6 @@
+% 画不同方法拟合曲线的特征误差对比图
 clear
-plan=22;
+plan=2;
 switch plan
 %     case 1
 %         load bird200.mat

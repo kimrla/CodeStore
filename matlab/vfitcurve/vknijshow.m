@@ -1,29 +1,17 @@
 clear all
 x=0:0.001:1;
-nmax=4;
-num=0;
 k=3;
-for n=1:nmax    
-% n=3;
-    for i=1:k+1 
-        if n<3
-            for t=1:length(x)
-                vknij_x(t)=vknij(k,n,i,1,x(t));
-            end
-            num=num+1;
-%             subplot(ceil(((k+1)/2*2^nmax)^0.5),ceil(((k+1)/2*2^nmax)^0.5),num),plot(x,vknij_x);
-            subplot(1/2*2^nmax,k+1,num),plot(x,vknij_x);
-        else
-            for j=1:2^(n-2)
-                for t=1:length(x)
-                    vknij_x(t)=vknij(k,n,i,j,x(t));
-                end
-                num=num+1;
-%                 subplot(ceil(((k+1)/2*2^nmax)^0.5),ceil(((k+1)/2*2^nmax)^0.5),num),plot(x,vknij_x);
-            subplot(1/2*2^nmax,k+1,num),plot(x,vknij_x);
-            end
-        end
-        ylabel(['i=',num2str(i)])
-    end
-    xlabel(['n=',num2str(n)])
+N=4;
+V=LSMatrix_V(k,N,x');
+V=V';
+for i=1:(k+1)*2
+    subplot((k+1)*2,1,i),plot(x,V(i,:),'color','k','LineWidth',1.5)
+end
+figure
+for i=(k+1)*2+1:(k+1)*2^2
+    subplot((k+1)*2,1,i-(k+1)*2),plot(x,V(i,:),'color','k','LineWidth',1.5)
+end
+figure
+for i=1+(k+1)*2^2:(k+1)*2^2+(k+1)*2
+    subplot((k+1)*2,1,i-(k+1)*2^2),plot(x,V(i,:),'color','k','LineWidth',1.5)
 end

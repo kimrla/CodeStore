@@ -1,5 +1,5 @@
 function b0123=svgc(step,p0,p1,p2,p3)
-    t=(0:step:1-step)';
+    t=(0:step:1)';
 
 
     b01=(1-t).*p0+t.*p1;
