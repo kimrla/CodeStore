@@ -149,17 +149,17 @@ title('小波滤波处理后的信号','fontsize', 15, 'fontname', '微软雅黑
 
 %% 简单例子
 
-% close
-% clear
-% % x=linspace(1,2*128-1,128)'/(2*128)';
-% x=linspace(0,1,128)';
-% f=3.*(x<0.25)+2*sin(50*pi*x).*(0.25<=x & x<0.5)+1./exp(abs(20*x-15)).*(x>=0.5);
-% nOP=f;
-% plot(nOP,'Color',[255 102 102]/255,'MarkerSize',15,'LineWidth',3)
+close
+clear
+% x=linspace(1,2*128-1,128)'/(2*128)';
+x=linspace(0,1,128)';
+f=3.*(x<0.25)+2*sin(50*pi*x).*(0.25<=x & x<0.5)+1./exp(abs(20*x-15)).*(x>=0.5);
+nOP=f;
+plot(nOP,'Color',[255 102 102]/255,'MarkerSize',15,'LineWidth',3)
 
 %% 局部增量式正交V变换
 k=3;
-Nmax=9;
+Nmax=6;
 num=(k+1)*2^(Nmax-1);%截取数据点位置
 tt=linspace(1,2*num-1,num)'/(2*num);
 % stp=1109;%截取数据点起点

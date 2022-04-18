@@ -3,7 +3,7 @@ clear all;
 % core_number=2;            %想要调用的处理器个数
 % parpool('local',core_number);
 tic
-example=24;
+example=2;
 switch example
     case 1
         % 实验1
@@ -16,9 +16,9 @@ switch example
         lamda=0.025;%节点率
     case 2
         % 实验2
-        x=0:0.05:10-0.05;
-        f=100./exp(abs(x-5))+(x-5).^2/500;
-        n=13;
+        x=0:0.005:1-0.005;
+        f=100./exp(abs(10*x-5))+(10*x-5).^5/500;
+        n=10;
         Num=length(x);%采样点个数
         a=min(x);
         b=max(x);
@@ -49,18 +49,21 @@ switch example
         M=length(gpoint)-1;
 end
 
-% f_=f+normrnd(0,1,1,Num);
 
+f_=f;
+plot(x,f_,'.','Color','r','MarkerSize',10)  
 % plot(x,f_,"*")
 % hold on
 % plot(x,f)
-% d=[x;f_]';%给定数据点,di=(xi,yi) i=1~M+1
+f_=f+normrnd(0,1,1,Num);
+d=[x;f_]';%给定数据点,di=(xi,yi) i=1~M+1
 
-% M=length(x)-1; %论文中是0~M，所以总数length=M+1
+M=length(x)-1; %论文中是0~M，所以总数length=M+1
 
 p=3;%B样条次数p=3，控制顶点n+1个，节点矢量ui i=1~n+p+2,
-
-plan=1;
+      
+hold on
+plan=2;
 switch plan
     case 1
         ui=jiedianxiangliang(n,p,a,b);%方案1 均匀节点向量
@@ -77,14 +80,15 @@ switch plan
 
 
         [N,R,P] = kongzhidingdian(M,n,p,x,ui,d);
-        plot(x,f_,"*")
-        hold on
+        
         DrawSpline(n,p,P,ui,a,b);
-        scatter(ui,ones(1,length(ui)))
+        legend('原始数据','拟合曲线','location','northwest','fontsize', 15, 'fontname', '微软雅黑')
+        plot(ui,ones(1,length(ui)),'o','color','k','MarkerSize',7)
+        legend('原始数据','拟合曲线','节点','location','northwest','fontsize', 15, 'fontname', '微软雅黑')
         [epsilon,e] = shujudianwucha(M,N,P,d);
     case 2
         NP=50;%种群规模
-        GM=3;%最大迭代次数
+        GM=1;%最大迭代次数
         TournamentSize=3;
         
         maxtime=1;
@@ -308,10 +312,12 @@ switch plan
         [~,~,bestP] = kongzhidingdian(M,length(pop(1).Position)+p,p,x,bestui,d);
         toc
         figure
-        plot(x,f_,"*")
+        f_=f;
+        plot(x,f_,'.','Color','r','MarkerSize',10) 
         hold on
         DrawSpline(neijiedianshuliang(end)+p,p,bestP,bestui,a,b);
-        scatter(bestui,ones(1,length(bestui)))
+        plot(bestui,ones(1,length(bestui)),'o','color','k','MarkerSize',7)
+        legend('原始数据','拟合曲线','节点','location','northwest','fontsize', 15, 'fontname', '微软雅黑')
         figure
         plot(BestCost)
         xlabel('迭代次数');

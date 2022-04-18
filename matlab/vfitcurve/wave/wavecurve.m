@@ -1,5 +1,5 @@
 clear
-plan=2;
+plan=3;
 switch plan
     case 1
         load bird200.mat
@@ -8,7 +8,7 @@ switch plan
         ln=5;
     case 3
         load yezi600.mat
-        ln=5;
+        ln=1;
     case 4
         load shizi1500.mat
     case 5
@@ -17,9 +17,10 @@ switch plan
         load hudie3000.mat
      case 7
         load niao21000.mat
+        ln=1;
     case 8
         load huacao4-1500.mat
-        ln=5;
+        ln=4;
     case 9
         load G-200.mat
         ln=5;
@@ -60,10 +61,12 @@ P=[gpoint;gpoint(1,:)];
 % plot(gpoint(:,1),gpoint(:,2),'.')
 % hold on
 % plot(grec(:,1),grec(:,2))
-[c,l] = wavedec(P(:,1),4,'db4');
+leveldb4=2;
+cutdb4level=1;
+[c,l] = wavedec(P(:,1),leveldb4,'db4');
 c(l(ln)+1:end) = 0;
 iwx = waverec(c,l,'db4');
-[c,l] = wavedec(P(:,2),4,'db4');
+[c,l] = wavedec(P(:,2),leveldb4,'db4');
 c(l(ln)+1:end) = 0;
 iwy = waverec(c,l,'db4');
 P_DWT = [iwx,iwy];
@@ -74,20 +77,20 @@ tt=linspace(0,1,4*length(iwx))';
 P_DWx=spline(t,iwx,tt);
 P_DWy=spline(t,iwy,tt);
 figure
-if plan<20
-load(['point',num2str(plan),'-200','.mat'])
-end
-plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10)
+% if plan<20
+% load(['point',num2str(plan),'-200','.mat'])
+% end
+plot(gpoint(1:3:end,1),gpoint(1:3:end,2),'.','Color','r','MarkerSize',10)
 hold on
 plot(P_DWx,P_DWy,'Color',[0 102 153]/255,'LineWidth',1.1)
 legend({'原始数据','拟合曲线'},'location','northwest','fontsize', 15, 'fontname', '微软雅黑')
 % wucha=vecnorm((P_DWT-P),2,2);
-[wuchaW,pjwuchaW]=distanceerror(P,P_DWT);
+[wuchaW,pjwuchaW,maxwuchaW,schaW]=distanceerror(P,P_DWT);
 
 tzwuchaW=wuchaW(tlist);
 
 pathname='C:\CodeStore\matlab\vfitcurve\data\';
 tzwcname=['tzwuchaW',num2str(plan),'.mat'];
-save ([pathname,tzwcname],'tzwuchaW','pjwuchaW','wuchaW') 
+save ([pathname,tzwcname],'tzwuchaW','pjwuchaW','wuchaW','maxwuchaW','schaW') 
 axis equal
 axis off

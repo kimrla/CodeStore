@@ -1,5 +1,5 @@
 clear
-plan=2;
+plan=3;
 switch plan
     case 1
         load bird200.mat
@@ -21,7 +21,7 @@ switch plan
         fenbianlv=0.2;
      case 7
         load niao21000.mat
-        fenbianlv=0.5;
+        fenbianlv=0.04;
     case 8
         load huacao4-1500.mat
         fenbianlv=0.04;
@@ -69,9 +69,13 @@ switch plan
         fenbianlv=0.0001;
 end
 load(['tlist' num2str(plan) '.mat'])
-
-[ps,ix] = dpsimplify(gpoint,fenbianlv);   %%0.0001
+P=[gpoint;gpoint(1,:)];
+[ps,ix] = dpsimplify(P,fenbianlv);   %%0.0001
+if plan<20
+load(['point',num2str(plan),'-200','.mat'])
+end
 plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10)
+% plot(gpoint(1:3:end,1),gpoint(1:3:end,2),'.','Color','r','MarkerSize',10)
 hold on
 % plot(ps(:,1),ps(:,2),'.','Color',[224 222 58]/255,'MarkerSize',15)
 
@@ -93,13 +97,13 @@ legend({'原始数据','拟合曲线'},'location','best','fontsize', 15, 'fontna
 Chord = vecnorm(diff([gpoint;gpoint(1,:)],1,1),2,2);
 normt = [0;cumsum(Chord)/sum(Chord)];
 Cd = bspline_deboor(n,T,[real(PP_all(:,NumItr+1)),imag(PP_all(:,NumItr+1))],normt);
-wucha=vecnorm((Cd(1:end,:)-[gpoint;gpoint(1,:)]),2,2);
-pjwucha=mean(wucha);
-tzwuchaP=wucha(tlist);
 
+
+[wuchaP,pjwuchaP,maxwuchaP,schaP]=distanceerror(P,Cd);
+tzwuchaP=wuchaP(tlist);
 pathname='C:\CodeStore\matlab\vfitcurve\data\';
 tzwcname=['tzwuchaP',num2str(plan),'.mat'];
-save ([pathname,tzwcname],'tzwuchaP','pjwucha')
+save ([pathname,tzwcname],'tzwuchaP','pjwuchaP','wuchaP','maxwuchaP','schaP')
 % plot(Cd(:,1),Cd(:,2),'.','Color','g','LineWidth',1.5)
 % tzwcp=vecnorm((C1(tlist,:)-gpoint(tlist,:)),2,2);
 % for i=1:length(gpoint)

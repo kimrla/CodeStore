@@ -14,16 +14,11 @@ for u = a : 0.005 : b-0.005
     for i = 1 : n+1
         Njp_u(j, i) = Njp(i, p , u, ui);
     end
-    p_u = Njp_u(j,:)*Pi;
-    if u == 0
-        tempx = p_u(1,1);
-        tempy = p_u(1,2);
-        line([tempx p_u(1,1)], [tempy p_u(1,2)],...
-            'Marker','.','LineStyle','-', 'Color',[.3 .6 .9], 'LineWidth',3);
-    else
-        line([tempx p_u(1,1)], [tempy p_u(1,2)],...
-            'Marker','.','LineStyle','-', 'Color',[.3 .6 .9], 'LineWidth',3);
-        tempx = p_u(1,1);
-        tempy = p_u(1,2);
-    end    
+    p_u(j,:) = Njp_u(j,:)*Pi;
+
+        tempx(j) = p_u(1,1);
+        tempy(j) = p_u(1,2);
+
+end
+plot(p_u(:,1),p_u(:,2),'Color',[0 102 153]/255,'LineWidth',3)
 end

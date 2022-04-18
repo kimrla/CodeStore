@@ -33,11 +33,11 @@ for s = 1 : NumSeg
     end 
     switch NumDim
         case 1
-            plot(ts,ys,'Color',[0 102 153]/255,'LineWidth',1.5);hold on
+            plot(ts,ys,'Color',[0 102 153]/255,'LineWidth',1.1);hold on
         case 2
-            plot(ys(:,1),ys(:,2),'Color',[0 102 153]/255,'LineWidth',1.5);hold on
+            plot(ys(:,1),ys(:,2),'Color',[0 102 153]/255,'LineWidth',1.1);hold on
         case 3
-            plot(ys(:,1),ys(:,2),ys(:,3),'Color',[0 102 153]/255,'LineWidth',1.5);hold on
+            plot(ys(:,1),ys(:,2),ys(:,3),'Color',[0 102 153]/255,'LineWidth',1.1);hold on
     end
 end
 

@@ -1,5 +1,5 @@
 clear
-plan=9;
+plan=3;
 switch plan
     case 1
         load bird200.mat
@@ -17,7 +17,7 @@ switch plan
         nd=474;
     case 5
         load fenghuang2000.mat
-        nd=741;
+        nd=500;
     case 6
         load hudie3000.mat
         nd=810;
@@ -26,7 +26,7 @@ switch plan
         nd=310;
     case 8
         load huacao4-1500.mat
-        nd=670;
+        nd=676;
     case 9
         load G-200.mat
 %         N=6;
@@ -88,23 +88,28 @@ P_FFT = ifrdescp(z,nd);
 P=[P;P(1,:)];
 P_FFT=[P_FFT;P_FFT(1,:)];
 t=linspace(0,1,length(P_FFT))';
-tt=linspace(0,1,4*length(P_FFT))';
+% tt=linspace(0,1,4*length(P_FFT))';
+tt=t;
 P_FFx=spline(t,P_FFT(:,1),tt);
 P_FFy=spline(t,P_FFT(:,2),tt);
 figure
-if plan<20
-load(['point',num2str(plan),'-200','.mat'])
-end
-plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10)
+% if plan<20
+% load(['point',num2str(plan),'-200','.mat'])
+% end
+plot(gpoint(1:3:end,1),gpoint(1:3:end,2),'.','Color','r','MarkerSize',10)
 hold on
 plot(P_FFx,P_FFy,'Color',[0 102 153]/255,'LineWidth',1.1)
 % plot(P_FFT(:,1),P_FFT(:,2),'Color',[0 102 153]/255,'LineWidth',1.1)
 legend({'原始数据','拟合曲线'},'location','northwest','fontsize', 15, 'fontname', '微软雅黑')
-[wuchaF,pjwuchaF]=distanceerror(P,P_FFT);
+[wuchaF,pjwuchaF,maxwuchaF,schaF]=distanceerror(P,P_FFT);
 
 tzwuchaF=wuchaF(tlist);
 pathname='C:\CodeStore\matlab\vfitcurve\data\';
 tzwcname=['tzwuchaF',num2str(plan),'.mat'];
-save ([pathname,tzwcname],'tzwuchaF','pjwuchaF','wuchaF')
+save ([pathname,tzwcname],'tzwuchaF','pjwuchaF','wuchaF','maxwuchaF','schaF')
 axis equal
 axis off
+% figure
+% [~,psi,xval] = wavefun('haar',0);
+% figure
+% plot(xval,psi,'Color',[0 102 153]/255,'LineWidth',3)

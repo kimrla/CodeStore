@@ -308,10 +308,10 @@ for t=1:maxtime
 end
 load besttest.mat
 bestui=[zeros(1,p+1) pop(1).Position b*ones(1,p+1)];
-[bestN,~,bestP] = kongzhidingdian(M,length(pop(1).Position)+p,p,x,bestui,d);
+
 toc
-Pp=bestN*bestP;
-[wuchaB,pjwuchaB]=distanceerror(gpoint,Pp);
+
+
 % wucha=vecnorm((bestN*bestP-gpoint),2,2);
 
 
@@ -319,25 +319,29 @@ Pp=bestN*bestP;
 
 %%
 figure
-if plan<20
-load(['point',num2str(plan),'-200','.mat'])
-end
-plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10)
+% if plan<20
+% load(['point',num2str(plan),'-200','.mat'])
+% end
+[bestN,~,bestP] = kongzhidingdian(M,length(pop(1).Position)+p,p,x,bestui,d);
+
+Pp=bestN*bestP;
+[wuchaB,pjwuchaB,maxwuchaB,schaB]=distanceerror(gpoint,Pp);
+plot(gpoint(1:3:end,1),gpoint(1:3:end,2),'.','Color','r','MarkerSize',10)
 hold on
 DrawSplineB(neijiedianshuliang(end)+p,p,bestP,bestui,a,b);
 axis equal
 axis off
 legend({'原始数据','拟合曲线'},'location','northwest','fontsize', 15, 'fontname', '微软雅黑')
 
-%%
+
 % scatter(tezhengc(:,1),tezhengc(:,2),'g')
-figure
-scatter(bestui,ones(1,length(bestui)))
-figure
-plot(BestCost)
-xlabel('迭代次数');
-ylabel('适应度');
-title('适应度进化曲线')
+% figure
+% scatter(bestui,ones(1,length(bestui)))
+% figure
+% plot(BestCost)
+% xlabel('迭代次数');
+% ylabel('适应度');
+% title('适应度进化曲线')
 %
 % % figure
 % % load tzwuchaV
@@ -358,8 +362,8 @@ tzwcname=['tzwuchaB',num2str(plan),'.mat'];
 % wucha=exp((BestCost(end)-log(Num)*(2*(length(bestui)-p-2)-p+1))/(Num))-1;
 % pjwucha=mean(wucha);
 pathname='C:\CodeStore\matlab\vfitcurve\data\';
-save ([pathname,tzwcname],'tzwuchaB','pjwuchaB','wuchaB')
-% % save tzwuchaB.mat tzwuchaB
+save ([pathname,tzwcname],'tzwuchaB','pjwuchaB','wuchaB','maxwuchaB','schaB')
+% save tzwuchaB.mat tzwuchaB
 % figure
 % plot(neijiedianshuliang)
 Bdataname=['Bplan',num2str(plan),datestr(datetime('now'),'-yyyy-mm-dd-HH-MM'),'.mat'];

@@ -1,13 +1,15 @@
+%立体全局误差对比图
+close all
 clear
-plist=[2,3,8,9,21,22];
-% plist=[9];
+% plist=[2,3,9,21];
+plist=[7];
 for i=1:length(plist)
 
 plan=plist(i);
 load(['tlist' num2str(plan) '.mat'])
 load (['tzwuchaV' num2str(plan) '.mat'])
 load (['tzwuchaB' num2str(plan) '.mat'])
-% load (['tzwuchaP' num2str(plan) '.mat'])
+load (['tzwuchaP' num2str(plan) '.mat'])
 load (['tzwuchaF' num2str(plan) '.mat'])
 load (['tzwuchaW' num2str(plan) '.mat'])
 % pjtzwcV(i,1)=mean(tzwuchaV);
@@ -65,10 +67,11 @@ box on
 plot3(x,1*y,wuchaV,'LineWidth',1.1);
 % % text(x(tlist),1*y(tlist),wuchaV(tlist),'o','fontsize',10)
 plot3(x,2*y,wuchaB,'LineWidth',1.1);
+plot3(x,3*y,wuchaP,'LineWidth',1.1);
 % % text(x(tlist),2*y(tlist),wuchaB(tlist),'o','fontsize',10)
-plot3(x,3*y,wuchaF,'LineWidth',1.1);
+plot3(x,4*y,wuchaF,'LineWidth',1.1);
 % % text(x(tlist),3*y(tlist),wuchaF(tlist),'o','fontsize',10)
-plot3(x,4*y,wuchaW,'LineWidth',1.1);
+plot3(x,5*y,wuchaW,'LineWidth',1.1);
 % text(x(tlist),4*y(tlist),wuchaW(tlist),'o','fontsize',10)
 for i=1:length(tlist)
     plot3(x(tlist(i))*y,linspace(0,5,length(wuchaV)),0*y,'k','linewidth',1.5);
@@ -76,12 +79,13 @@ end
 % plot3(x(tlist),4*y(tlist),0*y(tlist));
 view(11,17)
 xlim([1 length(wuchaV)]);
-ylim([0.8 4.2]);
-zlabel('global error')
-set(gca,'ytick',[1: 4],'yticklabel',{'V-system','Genetic algorithm','Fourier','Db4 wavelet'},'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
-
-
-
+ylim([0.8 5.2]);
+% zlabel('global error')
+zlabel('全局误差')
+% set(gca,'ytick',[1: 4],'yticklabel',{'V-system','Genetic algorithm','Fourier','Db4 wavelet'},'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
+% set(gca,'ytick',[1: 3],'yticklabel',{'V-system','Fourier','Db4 wavelet'},'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
+% set(gca,'ytick',[1: 3],'yticklabel',{'本文方法','Fourier','Db4 小波'},'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
+set(gca,'ytick',[1: 5],'yticklabel',{'本文方法','遗传算法','PIA','Fourier','Db4 小波'},'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
 % set(gcf,'ylim',[0 ymax]) 
 % set(gcf, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
 % p=plot(,'markersize',10,'LineWidth',1.1);

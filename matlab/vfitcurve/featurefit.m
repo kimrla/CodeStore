@@ -1,7 +1,7 @@
 % 提取尖锐特征重新参数化带约束连续V系统拟合
 close
 clear
-plan=2;
+plan=3;
 switch plan
     case 1
         load bird200.mat
@@ -9,7 +9,7 @@ switch plan
         rd=3;
     case 2
         load fire500.mat
-        N=5;
+        N=4;
         rd=2;
     case 3
         load yezi600.mat
@@ -32,7 +32,7 @@ switch plan
     case 7
         load niao21000.mat
 %         N=7;
-        N=3;
+        N=9;
         rd=0.2;
     case 8
         load huacao4-1500.mat
@@ -91,7 +91,7 @@ switch plan
         N=4;
         gpoint=P;
 end
-gpoint=gpoint+rd*rand(size(gpoint));
+% gpoint=gpoint+rd*rand(size(gpoint));
 % load(['point',num2str(plan),'-200','.mat'])
 gpoint(end+1,:)=gpoint(1,:);
 
@@ -111,7 +111,9 @@ for i=1:num
     elseif i==num
         r=2;
     end
-    if K(i)>K(r) && K(i)>K(l) && phi(i)>pi/6 && (phi(i)>pi/6)*(phi(r)>pi/6)*(phi(l)>pi/6)==0
+    if K(i)>K(r) && K(i)>K(l) && phi(i)>pi/6
+%         && phi(i)>pi/2 
+%         && (phi(i)>pi/6)*(phi(r)>pi/6)*(phi(l)>pi/6)==0
         %         && phi(i)>pi/6        &&K(i)>3*mean(K)
         q(i)=1;
     end
@@ -175,20 +177,20 @@ CList(ismember(CList(:,1),newtezhengt),3)=0;
 find(CList(:,3)==0)
 CList(end+1,:)=[0,1,0];
 Lambda = LSCurFit_V(gpoint,k,N,newt,CList);
-Lambda(all(abs(Lambda)<=10*10^(-3),2),:)=0;
+Lambda(all(abs(Lambda)<=10^(-3),2),:)=0;
 nc=LSMatrix_V(k,N,newt)*Lambda;
 % wucha=vecnorm((nc-gpoint),2,2);
 % pjwucha=mean(wucha);
-[wuchaV,pjwuchaV]=distanceerror(gpoint,nc);
+[wuchaV,pjwuchaV,maxwuchaV,schaV]=distanceerror(gpoint,nc);
 
 
 pathname='C:\CodeStore\matlab\vfitcurve\data\';
 
 tlistname=['tlist',num2str(plan),'.mat'];
-% save ([pathname,tlistname],'tlist','plan')
+save ([pathname,tlistname],'tlist','plan')
 tzwuchaV=wuchaV(tlist);
 tzwcname=['tzwuchaV',num2str(plan),'.mat'];
-% save ([pathname,tzwcname],'tzwuchaV','pjwuchaV','wuchaV') 
+save ([pathname,tzwcname],'tzwuchaV','pjwuchaV','wuchaV','maxwuchaV','schaV') 
 
 
 
@@ -196,7 +198,8 @@ figure,
 % if plan<20
 % load(['point',num2str(plan),'-200','.mat'])
 % end
-plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10);hold on
+% plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10);hold on
+plot(gpoint(1:3:end,1),gpoint(1:3:end,2),'.','Color','r','MarkerSize',10);hold on
 % plot(gpoint(tlist(21:end),1),gpoint(tlist(21:end),2),'.','Color',[224 222 58]/255,'MarkerSize',15);hold on
 
 % gpoint(end,:)=NaN;
@@ -206,12 +209,12 @@ plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10);hold on
 % fenduan=1/(2^(N-2)):1/(2^(N-2)):(2^(N-2)-1)/(2^(N-2));
 % A=LSMatrix_V(k,N,fenduan');
 % jiedian=A*Lambda;
-T=LSMatrix_V(k,N,newtezhengt')*Lambda;
+% T=LSMatrix_V(k,N,newtezhengt')*Lambda;
 
 % scatter(jiedian(:,1),jiedian(:,2),'b')
 % hold on
-plot(T(:,1),T(:,2),'gs','color',[0 102 153]/255,'MarkerSize',10)
-legend('原始数据点','特征点','location','northwest','fontsize', 15, 'fontname', '微软雅黑')
+% plot(T(:,1),T(:,2),'gs','color',[0 102 153]/255,'MarkerSize',10)
+% legend('原始数据','特征点','location','northwest','fontsize', 15, 'fontname', '微软雅黑')
 axis equal
 axis off
 VCompose(Lambda,k,N)
@@ -221,8 +224,8 @@ legend({'原始数据','拟合曲线'},'location','northwest','fontsize', 15, 'f
 axis equal
 axis off
 % plot(gpoint(u,1),gpoint(u,2),'.','Color',[255 0 102]/255,'MarkerSize',15);
-% Lambda(all(Lambda~=0,2),3)=find(all(Lambda~=0,2));
-% Lambda(all(Lambda==0,2),:)=[];
+Lambda(all(Lambda~=0,2),3)=find(all(Lambda~=0,2));
+Lambda(all(Lambda==0,2),:)=[];
 
 
 function [phi,K]=qulv(gpoint,i,num)

@@ -336,7 +336,8 @@ print(gcf,'-dsvg',[path,'ecg',ecgname,'f'])
 % saveas(gcf,[path,'ecg',ecgname,'lgd','.fig'])
 % print(gcf,'-depsc','-tiff',[path,'ecg',ecgname,'lgd'])
 % print(gcf,'-dpng',[path,'ecg',ecgname,'lgd'])
-% print(gcf,'-dsvg',[path,'ecg',ecgname,'lgd'])
+% print(gcf,'-dsvg',[path,'ecg',ecgname,'lgd']) %lgd legend
+
 %% 累积归一化能量图
 figure
 energyv=cumsum(sort(abs(Lambda(4:128)).^2,'descend'));
