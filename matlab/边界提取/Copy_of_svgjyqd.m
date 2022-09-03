@@ -1,5 +1,5 @@
 clear
-svgname='people2';
+svgname='sanjiaolong';
 
 qudianjiange=1; %取点模式 0均匀取点 1非均匀取点
 switch qudianjiange
@@ -30,7 +30,7 @@ switch qudianjiange
         P(:,2)=max(max(P))-P(:,2);
         Pname=[svgname,'jy',num2str(pointnum),'.mat'];
     case 1
-        R = loadsvg([svgname,'.svg'], 1/7,0 );
+        R = loadsvg([svgname,'.svg'], 1/20,0 );
 %         P=R{1,1};
         P=cell2mat(R');
         P(:,2)=max(max(P))-P(:,2);

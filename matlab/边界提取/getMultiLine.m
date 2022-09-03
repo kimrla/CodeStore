@@ -1,5 +1,5 @@
 clear%%对多条边界取点，给每条边按边界长度占总长比例分配2次幂个点数
-svgname='pudong';
+svgname='白城市';
 
 qudianjiange=1; %取点模式 0均匀取点 1非均匀取点
 switch qudianjiange

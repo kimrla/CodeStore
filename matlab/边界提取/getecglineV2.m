@@ -149,17 +149,18 @@ title('小波滤波处理后的信号','fontsize', 15, 'fontname', '微软雅黑
 
 %% 简单例子
 
-close
-clear
+close all
+clear all
 % x=linspace(1,2*128-1,128)'/(2*128)';
-x=linspace(0,1,128)';
-f=3.*(x<0.25)+2*sin(50*pi*x).*(0.25<=x & x<0.5)+1./exp(abs(20*x-15)).*(x>=0.5);
+x=linspace(0,1,256)';
+f=3.*(x<0.25)+2*sin(30*pi*x).*(0.25<=x & x<0.5)+1./exp(abs(20*x-15)).*(x>=0.5);
 nOP=f;
-plot(nOP,'Color',[255 102 102]/255,'MarkerSize',15,'LineWidth',3)
-
+plot(x,nOP,'-.','Color',[255 102 102]/255,'MarkerSize',5,'LineWidth',3)
+set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑','looseInset',[0 0 0 0])
 %% 局部增量式正交V变换
+tic
 k=3;
-Nmax=6;
+Nmax=7;
 num=(k+1)*2^(Nmax-1);%截取数据点位置
 tt=linspace(1,2*num-1,num)'/(2*num);
 % stp=1109;%截取数据点起点
@@ -174,7 +175,7 @@ matrixname=['V',num2str(k),'_',num2str(num),'.mat'];
 load(matrixname)
 N=1;%初始V组数
 
-tol1 = 1e-3; % 允许的最大误差
+tol1 = 1e-1; % 允许的最大误差
 tol2 = 1e-6; % 要求的最小误差变化
 tol3=1e-3;%允许的最大平均误差
 
@@ -192,6 +193,20 @@ Lambda1=[];
 % plot(nOP,'.'),hold on;
 % plot(PP,'.')
 P0=PP;
+temA=O(:,1:k+1);
+Lambda0=temA'*PP;
+PC=O(:,1:(k+1)*2^(N-1))*Lambda0;
+deltaP=P0- PC;%拟合曲线和原始数据点的差向量
+delta = abs(deltaP);%每个点的误差
+figure,
+plot(x,nOP,'-.','Color',[255 102 102]/255,'MarkerSize',15,'LineWidth',3);hold on
+plot(x,PC,'Color',[0 102 153]/255,'LineWidth',3)
+plot(x,delta,'linewidth',3)
+set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑','looseInset',[0 0 0 0])
+%     legend({'原始信号','重构信号','绝对误差'},'fontsize', 15, 'fontname', '微软雅黑')
+legend({'原始数据','拟合曲线','绝对误差'},'location','best','fontsize', 15, 'fontname', '微软雅黑')
+
+
 while(err1 > tol1 && gen<Gmax&&N<Nmax)
     clear fidx
     fidx=find(maxout>tol1);%找出需要加层的区间索引
@@ -251,18 +266,20 @@ while(err1 > tol1 && gen<Gmax&&N<Nmax)
     meanout=mean(out,'omitnan');
     
     figure,
-    plot(nOP,'Color',[255 102 102]/255,'MarkerSize',15,'LineWidth',3);hold on
-    plot(PC,'Color',[0 102 153]/255,'LineWidth',3)
-    plot(delta,'linewidth',3)
-    set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
-    legend({'原始信号','重构信号','绝对误差'},'fontsize', 15, 'fontname', '微软雅黑')
-    title(['第',num2str(N),'代变换结果'],'fontsize', 15, 'fontname', '微软雅黑')
+    plot(x,nOP,'-.','Color',[255 102 102]/255,'MarkerSize',15,'LineWidth',3);hold on
+    plot(x,PC,'Color',[0 102 153]/255,'LineWidth',3)
+    plot(x,delta,'linewidth',3)
+    set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑','looseInset',[0 0 0 0])
+%     legend({'原始信号','重构信号','绝对误差'},'fontsize', 15, 'fontname', '微软雅黑')
+    legend({'原始数据','拟合曲线','绝对误差'},'fontsize', 15, 'fontname', '微软雅黑')
+%     title(['第',num2str(N),'代变换结果'],'fontsize', 15, 'fontname', '微软雅黑')
     
 end
-
-
-
-
+not0row=sum(any(Lambda1,2));
+elapsedTimeV=toc;
+drawheat(k,N,Lambda1)
+draw2tree(k,N,Lambda1)
+drawsumheat(k,N,Lambda1)
 %% 本方法最终重构结果
 figure
 curve=O(:,1:size(Lambda1,1))*Lambda1;
@@ -326,6 +343,7 @@ snrs=SNR(nOP,curves);
 % 
 
 %% db4小波变换对比实验
+tic
 figure
 [cdb4,ldb4] = wavedec(nOP,2,'db4');
 rdb4=cdb4;
@@ -343,6 +361,7 @@ plot(errdb4,'linewidth',3)
 set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
 title([num2str(ldb4(1)),'项db4小波变换'],'fontsize', 15, 'fontname', '微软雅黑')
 snrdb4=SNR(nOP,iwpdb4);
+elapsedTimedb4=toc;
 %% db2小波变换对比实验
 figure
 [cdb2,ldb2] = wavedec(nOP,2,'db2');
@@ -361,11 +380,81 @@ plot(errdb2,'linewidth',3)
 set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
 title([num2str(ldb2(1)),'项db2小波变换'],'fontsize', 15, 'fontname', '微软雅黑')
 snrdb2=SNR(nOP,iwpdb2);
+%% coif
+
+figure
+tic
+% nexttile
+levelcoif3=3;
+cutcoif3level=1;
+[ccoif3,lcoif3] = wavedec(P(:,1),levelcoif3,'coif3');
+rcoif3=ccoif3;
+rcoif3(sum(lcoif3(1:1+cutcoif3level))+1:end) = 0;
+iwcoif3 = waverec(rcoif3,lcoif3,'coif3');
+
+elapsedTimecoif3=toc;
+energycoif3=iwcoif3.^2;
+errcoif3=vecnorm(P-iwcoif3);
+maxerrcoif3=max(errcoif3);%最大误差
+meanerrcoif3=mean(errcoif3);%平均误差
+stderrcoif3=std(errcoif3);%标准差
+
+
+plot(P,'.','Color','r','MarkerSize',10);hold on
+plot(iwcoif3,'Color',[0 102 153]/255,'LineWidth',1.1)
+plot(errcoif3,'linewidth',3)
+set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
+legend('原始数据','重构曲线','location','northwest','fontsize', 15, 'fontname', '微软雅黑')
+
+% title([num2str(lcoif3(1)),'项coif3小波变换'],'fontsize', 15, 'fontname', '微软雅黑')
+% 
+% saveas(gcf,[path,'plan',num2str(plan),'coif3',num2str(sum(lxcoif3(1:1+cutcoif3level))),'.fig'])
+% print(gcf,'-depsc','-tiff',[path,'plan',num2str(plan),'coif3',num2str(sum(lxcoif3(1:1+cutcoif3level)))])
+% print(gcf,'-dpng',[path,'plan',num2str(plan),'coif3',num2str(sum(lxcoif3(1:1+cutcoif3level)))])
+% print(gcf,'-dsvg',[path,'plan',num2str(plan),'coif3',num2str(sum(lxcoif3(1:1+cutcoif3level)))])
+%% sym5
+
+figure
+tic
+% nexttile
+levelsym5=3;
+cutsym5level=1;
+[csym5,lsym5] = wavedec(P(:,1),levelsym5,'sym5');
+rsym5=csym5;
+rsym5(sum(lsym5(1:1+cutsym5level))+1:end) = 0;
+iwsym5 = waverec(rsym5,lsym5,'sym5');
+
+sum(lsym5(1:1+cutsym5level))
+
+elapsedTimesym5=toc;
+energysym5=iwsym5.^2;
+errsym5=vecnorm(P-Psym5);
+maxerrsym5=max(errsym5);%最大误差
+meanerrsym5=mean(errsym5);%平均误差
+stderrsym5=std(errsym5);%标准差
+
+
+
+plot(P,'.','Color','r','MarkerSize',10);hold on
+plot(iwsym5,'Color',[0 102 153]/255,'LineWidth',1.1)
+
+set(gca, 'linewidth', 1.1, 'fontsize', 10, 'fontname', '微软雅黑')
+legend('原始数据','重构曲线','fontsize', 15, 'fontname', '微软雅黑')
+
+% title([num2str(lsym5(1)),'项sym5小波变换'],'fontsize', 15, 'fontname', '微软雅黑')
+% 
+% saveas(gcf,[path,'plan',num2str(plan),'sym5',num2str(sum(lxsym5(1:1+cutsym5level))),'.fig'])
+% print(gcf,'-depsc','-tiff',[path,'plan',num2str(plan),'sym5',num2str(sum(lxsym5(1:1+cutsym5level)))])
+% print(gcf,'-dpng',[path,'plan',num2str(plan),'sym5',num2str(sum(lxsym5(1:1+cutsym5level)))])
+% print(gcf,'-dsvg',[path,'plan',num2str(plan),'sym5',num2str(sum(lxsym5(1:1+cutsym5level)))])
+
 %% Fourier变换对比试验
+tic
 figure
 nd=256;
 z = frdescp1d(nOP);
 P_FFT = ifrdescp1d(z,nd);
+elapsedTimef=toc;
 errf=abs(nOP-P_FFT);
 maxerrf=max(errf);%最大误差
 meanerrf=mean(errf);%平均误差
