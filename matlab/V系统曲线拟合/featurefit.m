@@ -187,10 +187,10 @@ elapsedTimeV=toc;%运行时间
 pathname='C:\CodeStore\matlab\V系统曲线拟合\data\';%数据保存路径
 
 tlistname=['tlist',num2str(plan),'.mat'];
-save ([pathname,tlistname],'tlist','plan')%保存特征点索引
+% save ([pathname,tlistname],'tlist','plan')%保存特征点索引
 tzwuchaV=wuchaV(tlist);
 tzwcname=['tzwuchaV',num2str(plan),'.mat'];
-save ([pathname,tzwcname],'tzwuchaV','pjwuchaV','wuchaV','maxwuchaV','schaV') %保存误差数据
+% save ([pathname,tzwcname],'tzwuchaV','pjwuchaV','wuchaV','maxwuchaV','schaV') %保存误差数据
 
 
 

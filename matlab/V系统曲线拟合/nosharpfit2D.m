@@ -109,7 +109,7 @@ for i=1:num
         r=2;
     end
 %     mK(i)=1.5*mean([K(l),K(i),K(r)]);
-    if K(i)>K(r) && K(i)>K(l)  && phi(i)>pi/6 
+    if K(i)>K(r) && K(i)>K(l)  && K(i)>mean(K)
         %         && phi(i)>pi/6        &&K(i)>3*mean(K)    K(i)>mean(K) phi(i)>pi/6 
         q(i)=1;
     end
@@ -124,6 +124,7 @@ figure
 hold on
 plot(gpoint(tzloc,1),gpoint(tzloc,2),'gs','color',[0 102 153]/255,'MarkerSize',10);
 % load(['point',num2str(plan),'-200','.mat']);
+% load yezi200.mat
 plot(gpoint(:,1),gpoint(:,2),'.','Color','r','MarkerSize',10,'linewidth',1.5);
 legend('原始数据','特征点','location','northeast','fontsize', 15, 'fontname', '微软雅黑')
 axis equal
